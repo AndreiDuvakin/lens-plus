@@ -17,3 +17,6 @@ class User(Base):
     role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
 
     role = relationship('Role', back_populates='users')
+
+    lens_issues = relationship('LensIssue', back_populates='doctor')
+    appointments = relationship('Appointment', back_populates='doctor')

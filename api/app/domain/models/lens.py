@@ -28,3 +28,4 @@ class Lens(Base):
     type = relationship('LensesType', back_populates='lenses')
 
     set = relationship('SetLens', back_populates='lens')
+    lens_issues = relationship('LensIssue', back_populates='lens')
