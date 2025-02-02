@@ -18,3 +18,5 @@ class Appointment(Base):
     patient = relationship('Patient', back_populates='appointments')
     doctor = relationship('User', back_populates='appointments')
     type = relationship('AppointmentType', back_populates='appointments')
+
+    files = relationship('AppointmentFile', back_populates='appointment')

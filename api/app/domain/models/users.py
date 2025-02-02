@@ -20,3 +20,4 @@ class User(Base):
 
     lens_issues = relationship('LensIssue', back_populates='doctor')
     appointments = relationship('Appointment', back_populates='doctor')
+    mailing = relationship('Mailing', back_populates='user')
