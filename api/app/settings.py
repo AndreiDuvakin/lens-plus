@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     LOG_LEVEL: str = "info"
     LOG_FILE: str = "logs/app.log"
+    SECRET_KEY: str
+    ALGORITHM: str
 
     class Config:
         env_file = ".env"
@@ -12,3 +14,7 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_auth_data():
+    return {"secret_key": settings.SECRET_KEY, "algorithm": settings.ALGORITHM}
