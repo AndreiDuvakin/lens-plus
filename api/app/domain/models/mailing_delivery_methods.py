@@ -10,4 +10,4 @@ class MailingDeliveryMethod(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(VARCHAR(200), nullable=False)
 
-    mailing = relationship('MailingOption', back_populates='option')
+    mailing = relationship('MailingOption', back_populates='method')

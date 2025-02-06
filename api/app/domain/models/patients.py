@@ -20,4 +20,4 @@ class Patient(Base):
 
     lens_issues = relationship('LensIssue', back_populates='patient')
     appointments = relationship('Appointment', back_populates='patient')
-    mailing = relationship('Mailing', back_populates='patient')
+    mailing = relationship('Recipient', back_populates='patient')

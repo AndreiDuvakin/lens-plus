@@ -1,4 +1,29 @@
-from app.run import start_app
+from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
-if __name__ == '__main__':
-    start_app()
+from app.controllers.auth_routes import router as auth_router
+from app.settings import settings
+
+
+def start_app():
+    api_app = FastAPI()
+
+    api_app.add_middleware(
+        CORSMiddleware,
+        allow_origins=['*'],
+        allow_credentials=True,
+        allow_methods=['GET', 'POST', 'PUT', 'DELETE'],
+        allow_headers=['*'],
+    )
+
+    api_app.include_router(auth_router, prefix=settings.APP_PREFIX)
+
+    return api_app
+
+
+app = start_app()
+
+
+@app.get("/")
+async def root():
+    return {"message": "OK"}

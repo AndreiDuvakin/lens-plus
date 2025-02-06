@@ -9,8 +9,8 @@ class MailingOption(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
 
-    option_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    option_id = Column(Integer, ForeignKey('mailing_delivery_methods.id'), nullable=False)
     mailing_id = Column(Integer, ForeignKey('mailing.id'), nullable=False)
 
-    option = relationship('Patient', back_populates='mailing')
+    method = relationship('MailingDeliveryMethod', back_populates='mailing')
     mailing = relationship('Mailing', back_populates='mailing_options')

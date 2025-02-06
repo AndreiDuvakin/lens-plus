@@ -1,6 +1,6 @@
 import datetime
 
-from jose import jwt
+import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.users_repository import UsersRepository
