@@ -5,7 +5,7 @@ from app.domain.models import Base
 
 
 class Recipient(Base):
-    __tbalename__ = 'recipients'
+    __tablename__ = 'recipients'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
 

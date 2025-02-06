@@ -5,7 +5,7 @@ from app.domain.models import Base
 
 
 class MailingDeliveryMethod(Base):
-    __tbalename__ = 'mailing_delivery_methods'
+    __tablename__ = 'mailing_delivery_methods'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(VARCHAR(200), nullable=False)

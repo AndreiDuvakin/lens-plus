@@ -1,10 +1,9 @@
 
 from logging.config import fileConfig
 
-import sqlalchemy
 from alembic import context
 from sqlalchemy import pool
-from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.domain.models import Base
 from app.settings import settings
@@ -21,9 +20,8 @@ def get_url():
 
 
 async def run_migrations_online():
-    connectable = AsyncEngine(
-        sqlalchemy.create_engine(get_url(), poolclass=pool.NullPool, future=True)
-    )
+    connectable = create_async_engine(get_url(), poolclass=pool.NullPool, future=True)
+
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
