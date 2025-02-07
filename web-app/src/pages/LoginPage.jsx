@@ -1,13 +1,22 @@
 import {Form, Input, Button, Row, Col, Typography} from 'antd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useAuth} from "../AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
 
 const {Title} = Typography;
 
 const LoginPage = () => {
-    const {login} = useAuth();
+    const {user, login} = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
     const onFinish = async (values) => {
         setLoading(true);
@@ -15,6 +24,7 @@ const LoginPage = () => {
 
         try {
             await login(values);
+            navigate("/");
         } catch (error) {
             setError(`Ошибка при входе: ${error.message}`);
         } finally {

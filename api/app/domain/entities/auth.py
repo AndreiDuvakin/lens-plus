@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class AuthEntity(BaseModel):
-    login: str = Field(..., example='user@example.com')
-    password: str = Field(..., min_length=5, example='strongpassword')
+    login: str
+    password: str
 
