@@ -18,9 +18,10 @@ export const AuthProvider = ({children}) => {
         try {
             const token = await loginUser(loginData);
             localStorage.setItem("access_token", token);
-            setUser({ token });
+            setUser({token});
         } catch (error) {
             console.error("Login failed", error);
+            throw error;
         }
     };
 
