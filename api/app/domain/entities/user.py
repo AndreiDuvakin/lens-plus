@@ -8,7 +8,7 @@ class UserEntity(BaseModel):
     first_name: str = Field(..., example='Ivan')
     last_name: str = Field(..., example='Ivanov')
     patronymic: Optional[str] = Field(None, example='Ivanov')
-    login: str = Field(..., example='user@example.com')
+    login: str = Field(..., example='ivanov74')
 
     role_id: int = Field(..., example=1)
 
