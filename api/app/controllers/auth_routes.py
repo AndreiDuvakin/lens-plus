@@ -11,9 +11,9 @@ router = APIRouter()
 @router.post(
     "/login/",
     response_model=dict,
-    responses={401: {"description": "Неверный логин или пароль"}},
-    summary="Аутентификация пользователя",
-    description="Производит вход пользователя и выдает `access_token` в `cookie`.",
+    responses={401: {"description": "Invalid username or password"}},
+    summary="User authentication",
+    description="Logs in the user and outputs the `access_token` in the `cookie'",
 )
 async def auth_user(
         response: Response,
@@ -29,7 +29,7 @@ async def auth_user(
     if check is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Неверный логин или пароль",
+            detail="Invalid username or password",
         )
 
     access_token = auth_service.create_access_token({"sub": str(check.id)})

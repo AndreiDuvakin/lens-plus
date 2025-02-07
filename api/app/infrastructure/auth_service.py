@@ -9,10 +9,10 @@ from app.settings import get_auth_data
 
 class AuthService:
     def __init__(self, db: AsyncSession):
-        self.repository = UsersRepository(db)
+        self.user_repository = UsersRepository(db)
 
     async def authenticate_user(self, login: str, password: str):
-        user = await self.repository.get_by_login(login)
+        user = await self.user_repository.get_by_login(login)
 
         if not user:
             return None
