@@ -30,6 +30,15 @@ class UsersRepository:
         result = await self.db.execute(stmt)
         return result.scalars().first()
 
+    async def get_by_id_with_role(self, user_id: int) -> Optional[User]:
+        stmt = (
+            select(User)
+            .filter(User.id == user_id)
+            .options(joinedload(User.role))
+        )
+        result = await self.db.execute(stmt)
+        return result.scalars().first()
+
     async def create(self, user: User) -> User:
         self.db.add(user)
         await self.db.commit()
