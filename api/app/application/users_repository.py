@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
@@ -14,12 +16,12 @@ class UsersRepository:
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
-    async def get_by_id(self, user_id: int):
+    async def get_by_id(self, user_id: int) -> Optional[User]:
         stmt = select(User).filter(User.id == user_id)
         result = await self.db.execute(stmt)
         return result.scalars().first()
 
-    async def get_by_login(self, user_login: str):
+    async def get_by_login(self, user_login: str) -> Optional[User]:
         stmt = (
             select(User)
             .filter(User.login == user_login)

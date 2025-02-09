@@ -7,7 +7,7 @@ from app.domain.entities.patient import PatientEntity
 from app.domain.models import Patient
 
 
-class PatientService:
+class PatientsService:
     def __init__(self, db: AsyncSession):
         self.patient_repository = PatientsRepository(db)
 

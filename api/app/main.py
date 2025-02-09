@@ -17,8 +17,8 @@ def start_app():
         allow_headers=['*'],
     )
 
-    api_app.include_router(auth_router, prefix=settings.APP_PREFIX)
-    api_app.include_router(register_router, prefix=settings.APP_PREFIX)
+    api_app.include_router(auth_router, prefix=settings.APP_PREFIX, tags=['auth'])
+    api_app.include_router(register_router, prefix=settings.APP_PREFIX, tags=['register'])
 
     return api_app
 
@@ -26,6 +26,6 @@ def start_app():
 app = start_app()
 
 
-@app.get("/")
+@app.get("/", tags=['root'])
 async def root():
     return {"message": "OK"}

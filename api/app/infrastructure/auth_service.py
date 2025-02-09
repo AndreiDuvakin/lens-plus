@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 
 import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,18 +10,18 @@ from app.settings import get_auth_data
 
 class AuthService:
     def __init__(self, db: AsyncSession):
-        self.user_repository = UsersRepository(db)
+        self.users_repository = UsersRepository(db)
 
-    async def authenticate_user(self, login: str, password: str):
-        user = await self.user_repository.get_by_login(login)
+    async def authenticate_user(self, login: str, password: str) -> Optional[dict]:
+        user = await self.users_repository.get_by_login(login)
+        if user and user.check_password(password):
+            access_token = self.create_access_token({"user_id": user.id})
+            return {
+                "access_token": access_token,
+                "user_id": user.id
+            }
 
-        if not user:
-            return None
-
-        if not user.check_password(password):
-            return None
-
-        return user
+        return None
 
     @staticmethod
     def create_access_token(data: dict) -> str:

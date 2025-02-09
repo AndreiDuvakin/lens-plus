@@ -10,7 +10,7 @@ from app.domain.entities.user import UserEntity
 from app.domain.models import User
 
 
-class UserService:
+class UsersService:
     def __init__(self, db: AsyncSession):
         self.user_repository = UsersRepository(db)
         self.role_repository = RolesRepository(db)
