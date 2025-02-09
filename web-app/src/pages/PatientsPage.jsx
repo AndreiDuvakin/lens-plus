@@ -1,0 +1,5 @@
+const PatientsPage = () => {
+
+    return (
+    )
+}

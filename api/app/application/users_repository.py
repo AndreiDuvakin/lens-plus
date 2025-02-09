@@ -32,5 +32,4 @@ class UsersRepository:
         self.db.add(user)
         await self.db.commit()
         await self.db.refresh(user)
-
         return user
