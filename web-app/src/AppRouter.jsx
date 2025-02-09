@@ -2,6 +2,7 @@ import {Routes, Route, Navigate} from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
+import PatientsPage from "./pages/PatientsPage.jsx";
 
 
 const AppRouter = () => (
@@ -11,6 +12,7 @@ const AppRouter = () => (
         <Route element={<PrivateRoute/>}>
             <Route element={<MainLayout/>}>
                 <Route path={"/"} element={<p>1234</p>}/>
+                <Route path={"/patients"} element={<PatientsPage/>}/>
                 <Route path={"*"} element={<Navigate to={"/"}/>}/>
             </Route>
         </Route>

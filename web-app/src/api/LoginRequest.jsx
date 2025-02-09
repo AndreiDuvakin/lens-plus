@@ -1,8 +1,7 @@
 import axios from "axios";
 import CONFIG from "../core/Config.jsx";
 
-export const loginUser = async (loginData) => {
-    console.log(loginData)
+const loginUser = async (loginData) => {
     try {
         const response = await axios.post(`${CONFIG.BASE_URL}/login/`, loginData, {
             withCredentials: true,
@@ -16,3 +15,5 @@ export const loginUser = async (loginData) => {
         throw new Error(error.message);
     }
 };
+
+export default loginUser;
