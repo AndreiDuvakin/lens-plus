@@ -3,6 +3,7 @@ import {Input, Select, List, Card, Button, FloatButton} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 import getAllPatients from "../api/GetAllPatients.jsx";
+import PatientListCard from "../components/PatientListCard.jsx";
 
 const {Search} = Input;
 const {Option} = Select;
@@ -58,13 +59,11 @@ const PatientsPage = () => {
             </div>
 
             <List
-                grid={{gutter: 16, column: 2}}
+                grid={{gutter: 16, column: 1}}
                 dataSource={filteredPatients}
                 renderItem={(patient) => (
                     <List.Item>
-                        <Card title={`${patient.last_name} ${patient.first_name}`}>
-                            Информация о пациенте
-                        </Card>
+                        <PatientListCard patient={patient}/>
                     </List.Item>
                 )}
             />
