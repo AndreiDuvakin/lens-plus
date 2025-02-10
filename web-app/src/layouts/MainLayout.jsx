@@ -44,7 +44,7 @@ const MainLayout = () => {
 
     return (
         <Layout style={{minHeight: "100vh"}}>
-            <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+            <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} style={{height: "100vh", position: "fixed", left: 0}}>
                 <div style={{display: "flex", justifyContent: "center", padding: 16}}>
                     <img
                         src="/logo_rounded.png"
@@ -61,13 +61,10 @@ const MainLayout = () => {
                 />
             </Sider>
 
-            <Layout>
-                <Content style={{margin: "0 16px"}}>
-                    <div style={{marginTop: 15, padding: 24, minHeight: 360, background: "#fff", borderRadius: 8}}>
-                        <Outlet/>
-                    </div>
+            <Layout style={{marginLeft: collapsed ? 80 : 200, transition: "margin-left 0.2s"}}>
+                <Content style={{margin: "0 16px", padding: 24, minHeight: "100vh", overflow: "auto", background: "#fff", borderRadius: 8}}>
+                    <Outlet/>
                 </Content>
-
                 <Footer style={{textAlign: "center"}}>Линза+ © {new Date().getFullYear()}</Footer>
             </Layout>
         </Layout>
