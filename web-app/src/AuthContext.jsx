@@ -1,6 +1,6 @@
 import {createContext, useState, useContext, useEffect} from "react";
 import PropTypes from "prop-types";
-import loginUser from "./api/LoginRequest.jsx";
+import loginUser from "./api/auth/LoginRequest.jsx";
 import {Spin} from "antd";
 
 const AuthContext = createContext(undefined);

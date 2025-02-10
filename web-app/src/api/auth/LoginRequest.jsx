@@ -1,5 +1,5 @@
 import axios from "axios";
-import CONFIG from "../core/Config.jsx";
+import CONFIG from "../../core/Config.jsx";
 
 const loginUser = async (loginData) => {
     try {

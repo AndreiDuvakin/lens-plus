@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Input, Select, List, FloatButton, Row, Col, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useAuth } from "../AuthContext.jsx";
-import getAllPatients from "../api/GetAllPatients.jsx";
+import getAllPatients from "../api/patients/GetAllPatients.jsx";
 import PatientListCard from "../components/PatientListCard.jsx";
 import PatientModal from "../components/PatientModal.jsx"; // Подключаем модальное окно
 

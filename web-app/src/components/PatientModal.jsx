@@ -2,6 +2,7 @@ import {useEffect} from "react";
 import {Modal, Form, Input, DatePicker} from "antd";
 import moment from "moment";
 import PropTypes from "prop-types";
+import locale from "antd/es/date-picker/locale/ru_RU";
 
 const {TextArea} = Input;
 
@@ -77,7 +78,7 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
                     label="Дата рождения"
                     rules={[{required: true, message: "Выберите дату рождения"}]}
                 >
-                    <DatePicker style={{width: "100%"}} format="YYYY-MM-DD"/>
+                    <DatePicker style={{width: "100%"}} locale={locale} format="DD.MM.YYYY"/>
                 </Form.Item>
                 <Form.Item
                     name="address"
