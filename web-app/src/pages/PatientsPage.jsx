@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Input, Select, List, FloatButton, Row, Col } from "antd";
+import { Input, Select, List, FloatButton, Row, Col, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useAuth } from "../AuthContext.jsx";
 import getAllPatients from "../api/GetAllPatients.jsx";
 import PatientListCard from "../components/PatientListCard.jsx";
+import PatientModal from "../components/PatientModal.jsx"; // Подключаем модальное окно
 
 const { Search } = Input;
 const { Option } = Select;
@@ -17,6 +18,9 @@ const PatientsPage = () => {
 
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState(null);
 
     useEffect(() => {
         const fetchPatients = async () => {
@@ -45,6 +49,36 @@ const PatientsPage = () => {
                 : fullNameB.localeCompare(fullNameA);
         });
 
+    const handleAddPatient = () => {
+        setSelectedPatient(null);
+        setIsModalVisible(true);
+    };
+
+    const handleEditPatient = (patient) => {
+        setSelectedPatient(patient);
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleSubmit = (newPatient) => {
+        if (selectedPatient) {
+            setPatients((prevPatients) =>
+                prevPatients.map((p) =>
+                    p.id === selectedPatient.id ? { ...p, ...newPatient } : p
+                )
+            );
+            message.success("Пациент успешно обновлен!");
+        } else {
+            setPatients((prevPatients) => [...prevPatients, { id: Date.now(), ...newPatient }]);
+            message.success("Пациент успешно добавлен!");
+        }
+
+        setIsModalVisible(false);
+    };
+
     return (
         <div style={{ padding: 20 }}>
             <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
@@ -71,8 +105,12 @@ const PatientsPage = () => {
                 grid={{ gutter: 16, column: 1 }}
                 dataSource={filteredPatients}
                 renderItem={(patient) => (
-                    <List.Item>
-                        <PatientListCard patient={patient} />
+                    <List.Item
+                    onClick={() => {
+                        handleEditPatient(patient);
+                    }}
+                    >
+                        <PatientListCard patient={patient}/>
                     </List.Item>
                 )}
                 pagination={{
@@ -90,7 +128,14 @@ const PatientsPage = () => {
             <FloatButton
                 icon={<PlusOutlined />}
                 style={{ position: "fixed", bottom: 20, right: 20 }}
-                onClick={() => console.log("Добавить пациента")}
+                onClick={handleAddPatient}
+            />
+
+            <PatientModal
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                onSubmit={handleSubmit}
+                patient={selectedPatient}
             />
         </div>
     );

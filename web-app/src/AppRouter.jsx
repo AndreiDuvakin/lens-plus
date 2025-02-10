@@ -11,11 +11,11 @@ const AppRouter = () => (
 
         <Route element={<PrivateRoute/>}>
             <Route element={<MainLayout/>}>
-                <Route path={"/"} element={<p>1234</p>}/>
                 <Route path={"/patients"} element={<PatientsPage/>}/>
-                <Route path={"*"} element={<Navigate to={"/"}/>}/>
+                <Route path={"/"} element={<p>1234</p>}/>
             </Route>
         </Route>
+        <Route path={"*"} element={<Navigate to={"/"}/>}/>
     </Routes>
 )
 
