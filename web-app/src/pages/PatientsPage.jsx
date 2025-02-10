@@ -6,7 +6,6 @@ import getAllPatients from "../api/GetAllPatients.jsx";
 import PatientListCard from "../components/PatientListCard.jsx";
 import PatientModal from "../components/PatientModal.jsx"; // Подключаем модальное окно
 
-const { Search } = Input;
 const { Option } = Select;
 
 const PatientsPage = () => {
@@ -83,7 +82,7 @@ const PatientsPage = () => {
         <div style={{ padding: 20 }}>
             <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
                 <Col xs={24} sm={16}>
-                    <Search
+                    <Input
                         placeholder="Поиск пациента"
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{ width: "100%" }}

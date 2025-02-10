@@ -9,15 +9,17 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        if (patient) {
-            form.setFieldsValue({
-                ...patient,
-                birthday: patient.birthday ? moment(patient.birthday) : null,
-            });
-        } else {
-            form.resetFields();
+        if (visible) {
+            if (patient) {
+                form.setFieldsValue({
+                    ...patient,
+                    birthday: patient.birthday ? moment(patient.birthday) : null,
+                });
+            } else {
+                form.resetFields();
+            }
         }
-    }, [patient, form]);
+    }, [visible, patient, form]);
 
     const handleOk = async () => {
         try {
@@ -26,6 +28,7 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
                 values.birthday = values.birthday.format("YYYY-MM-DD");
             }
             onSubmit(values);
+            form.resetFields();
         } catch (errorInfo) {
             console.log("Validation Failed:", errorInfo);
         }
@@ -35,13 +38,17 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
         <Modal
             title={patient ? "Редактировать пациента" : "Добавить пациента"}
             open={visible}
-            onCancel={onCancel}
+            onCancel={() => {
+                form.resetFields();
+                onCancel();
+            }}
             onOk={handleOk}
             okText="Сохранить"
             cancelText="Отмена"
             centered
             maskClosable={false}
-            bodyStyle={{padding: 24}}
+            forceRender={true}
+            styles={{body: {padding: 24}}}
             style={{top: 20}}
         >
             <Form form={form} layout="vertical">
