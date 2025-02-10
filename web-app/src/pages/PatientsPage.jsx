@@ -5,6 +5,7 @@ import { useAuth } from "../AuthContext.jsx";
 import getAllPatients from "../api/GetAllPatients.jsx";
 import PatientListCard from "../components/PatientListCard.jsx";
 
+const { Search } = Input;
 const { Option } = Select;
 
 const PatientsPage = () => {
@@ -13,6 +14,9 @@ const PatientsPage = () => {
     const [sortOrder, setSortOrder] = useState("asc");
     const [patients, setPatients] = useState([]);
     const [error, setError] = useState(null);
+
+    const [current, setCurrent] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     useEffect(() => {
         const fetchPatients = async () => {
@@ -45,7 +49,7 @@ const PatientsPage = () => {
         <div style={{ padding: 20 }}>
             <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
                 <Col xs={24} sm={16}>
-                    <Input
+                    <Search
                         placeholder="Поиск пациента"
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{ width: "100%" }}
@@ -71,6 +75,16 @@ const PatientsPage = () => {
                         <PatientListCard patient={patient} />
                     </List.Item>
                 )}
+                pagination={{
+                    current,
+                    pageSize,
+                    showSizeChanger: true,
+                    pageSizeOptions: ["5", "10", "20", "50"],
+                    onChange: (page, newPageSize) => {
+                        setCurrent(page);
+                        setPageSize(newPageSize);
+                    },
+                }}
             />
 
             <FloatButton
