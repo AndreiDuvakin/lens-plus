@@ -2,15 +2,18 @@ import { Card } from "antd";
 import PropTypes from "prop-types";
 
 const PatientListCard = ({ patient }) => {
+    const birthday = new Date(patient.birthday)
+
     return (
         <Card
-            hoverable={true}
+            hoverable
+            type="inner"
             title={`${patient.last_name} ${patient.first_name}`}
+            style={{ marginBottom: 16, borderRadius: 12 }}
         >
-            <p><strong>📅 Дата рождения:</strong> {patient.birthday}</p>
+            <p><strong>📅 Дата рождения:</strong> {birthday.toLocaleString('ru-RU', {month: 'long', day: 'numeric', year: 'numeric'})}</p>
             {patient.phone && <p><strong>📞 Телефон:</strong> {patient.phone}</p>}
             {patient.email && <p><strong>✉️ Email:</strong> {patient.email}</p>}
-            {patient.diagnosis && <p><strong>🩺 Диагноз:</strong> {patient.diagnosis}</p>}
         </Card>
     );
 };

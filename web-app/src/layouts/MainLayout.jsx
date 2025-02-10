@@ -2,12 +2,14 @@ import {useState} from "react";
 import {Layout, Menu} from "antd";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {
-    AppstoreOutlined,
+    HomeOutlined,
     CalendarOutlined,
     DatabaseOutlined,
+    FolderViewOutlined,
     UserOutlined,
-    SolutionOutlined,
-    LogoutOutlined
+    TeamOutlined,
+    LogoutOutlined,
+    MessageOutlined
 } from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 
@@ -22,11 +24,12 @@ const MainLayout = () => {
     const {logout} = useAuth();
 
     const menuItems = [
-        getItem("Главная", "/", <AppstoreOutlined/>),
+        getItem("Главная", "/", <HomeOutlined/>),
         getItem("Приёмы", "/appointments", <CalendarOutlined/>),
-        getItem("Линзы", "/lenses", <DatabaseOutlined/>),
-        getItem("Пациенты", "/patients", <SolutionOutlined/>),
+        getItem("Линзы", "/lenses", <FolderViewOutlined/>),
+        getItem("Пациенты", "/patients", <TeamOutlined/>),
         getItem("Выдачи линз", "/dispensing", <DatabaseOutlined/>),
+        getItem("Рассылки", "/mailing", <MessageOutlined/>),
         {type: "divider"},
         getItem("Мой профиль", "profile", <UserOutlined/>, [
             getItem("Перейти в профиль", "/profile", <UserOutlined/>),
@@ -62,7 +65,7 @@ const MainLayout = () => {
             </Sider>
 
             <Layout style={{marginLeft: collapsed ? 80 : 200, transition: "margin-left 0.2s"}}>
-                <Content style={{margin: "0 16px", padding: 24, minHeight: "100vh", overflow: "auto", background: "#fff", borderRadius: 8}}>
+                <Content style={{margin: "0 16px", padding: 24, minHeight: "100vh", overflow: "auto", background: "#fff", borderRadius: 8, marginTop: "15px"}}>
                     <Outlet/>
                 </Content>
                 <Footer style={{textAlign: "center"}}>Линза+ © {new Date().getFullYear()}</Footer>

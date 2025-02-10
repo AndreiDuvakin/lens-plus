@@ -1,12 +1,11 @@
-import {useEffect, useState} from "react";
-import {Input, Select, List, Card, Button, FloatButton} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
-import {useAuth} from "../AuthContext.jsx";
+import { useEffect, useState } from "react";
+import { Input, Select, List, FloatButton, Row, Col } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { useAuth } from "../AuthContext.jsx";
 import getAllPatients from "../api/GetAllPatients.jsx";
 import PatientListCard from "../components/PatientListCard.jsx";
 
-const {Search} = Input;
-const {Option} = Select;
+const { Option } = Select;
 
 const PatientsPage = () => {
     const { user } = useAuth();
@@ -37,40 +36,46 @@ const PatientsPage = () => {
         .sort((a, b) => {
             const fullNameA = `${a.last_name} ${a.first_name}`;
             const fullNameB = `${b.last_name} ${b.first_name}`;
-            return sortOrder === "asc" ? fullNameA.localeCompare(fullNameB) : fullNameB.localeCompare(fullNameA);
+            return sortOrder === "asc"
+                ? fullNameA.localeCompare(fullNameB)
+                : fullNameB.localeCompare(fullNameA);
         });
 
     return (
-        <div style={{padding: 20}}>
-            <div style={{display: "flex", gap: 10, marginBottom: 20}}>
-                <Search
-                    placeholder="Поиск пациента"
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{flex: 1}}
-                />
-                <Select
-                    value={sortOrder}
-                    onChange={(value) => setSortOrder(value)}
-                    style={{width: 150}}
-                >
-                    <Option value="asc">А-Я</Option>
-                    <Option value="desc">Я-А</Option>
-                </Select>
-            </div>
+        <div style={{ padding: 20 }}>
+            <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+                <Col xs={24} sm={16}>
+                    <Input
+                        placeholder="Поиск пациента"
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{ width: "100%" }}
+                    />
+                </Col>
+                <Col xs={24} sm={8}>
+                    <Select
+                        value={sortOrder}
+                        onChange={(value) => setSortOrder(value)}
+                        style={{ width: "100%" }}
+                    >
+                        <Option value="asc">А-Я</Option>
+                        <Option value="desc">Я-А</Option>
+                    </Select>
+                </Col>
+            </Row>
 
             <List
-                grid={{gutter: 16, column: 1}}
+                grid={{ gutter: 16, column: 1 }}
                 dataSource={filteredPatients}
                 renderItem={(patient) => (
                     <List.Item>
-                        <PatientListCard patient={patient}/>
+                        <PatientListCard patient={patient} />
                     </List.Item>
                 )}
             />
 
             <FloatButton
-                icon={<PlusOutlined/>}
-                style={{position: "fixed", bottom: 20, right: 20}}
+                icon={<PlusOutlined />}
+                style={{ position: "fixed", bottom: 20, right: 20 }}
                 onClick={() => console.log("Добавить пациента")}
             />
         </div>
