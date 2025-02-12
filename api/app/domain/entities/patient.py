@@ -5,13 +5,13 @@ from pydantic import BaseModel
 
 
 class PatientEntity(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     first_name: str
     last_name: str
-    patronymic: Optional[str]
+    patronymic: Optional[str] = None
     birthday: datetime.date
-    address: Optional[str]
-    email: Optional[str]
-    phone: Optional[str]
-    diagnosis: Optional[str]
-    correction: Optional[str]
+    address: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    diagnosis: Optional[str] = None
+    correction: Optional[str] = None

@@ -1,8 +1,10 @@
 import {useEffect} from "react";
 import {Modal, Form, Input, DatePicker} from "antd";
-import moment from "moment";
 import PropTypes from "prop-types";
 import locale from "antd/es/date-picker/locale/ru_RU";
+import validator from "validator";
+import {MaskedInput} from "antd-mask-input";
+import dayjs from "dayjs";
 
 const {TextArea} = Input;
 
@@ -11,16 +13,15 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
 
     useEffect(() => {
         if (visible) {
+            form.resetFields();
             if (patient) {
                 form.setFieldsValue({
                     ...patient,
-                    birthday: patient.birthday ? moment(patient.birthday) : null,
+                    birthday: patient.birthday ? dayjs(patient.birthday, "YYYY-MM-DD") : null,
                 });
-            } else {
-                form.resetFields();
             }
         }
-    }, [visible, patient, form]);
+    }, [visible, patient]);
 
     const handleOk = async () => {
         try {
@@ -49,7 +50,6 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
             centered
             maskClosable={false}
             forceRender={true}
-            styles={{body: {padding: 24}}}
             style={{top: 20}}
         >
             <Form form={form} layout="vertical">
@@ -89,15 +89,27 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
                 <Form.Item
                     name="email"
                     label="Email"
-                    rules={[{type: "email", message: "Введите корректный email"}]}
+                    rules={[
+                        {
+                            validator: (_, value) => {
+                                if (value && !validator.isEmail(value)) {
+                                    return Promise.reject("Некорректный email");
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                    ]}
                 >
                     <Input placeholder="Введите email"/>
                 </Form.Item>
                 <Form.Item
                     name="phone"
                     label="Телефон"
+                    rules={[
+                        {required: true, message: "Введите телефон"},
+                    ]}
                 >
-                    <Input placeholder="Введите телефон"/>
+                    <MaskedInput placeholder="Введите номер телефона" mask="+7 (000) 000-00-00"/>
                 </Form.Item>
                 <Form.Item
                     name="diagnosis"

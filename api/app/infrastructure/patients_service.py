@@ -55,8 +55,8 @@ class PatientsService:
             correction=patient_model.correction,
         )
 
-    async def update_patient(self, user_id: int, patient: PatientEntity) -> Optional[PatientEntity]:
-        patient_model = await self.patient_repository.get_by_id(user_id)
+    async def update_patient(self, patient_id: int, patient: PatientEntity) -> Optional[PatientEntity]:
+        patient_model = await self.patient_repository.get_by_id(patient_id)
         if patient_model:
             patient_model.first_name = patient.first_name
             patient_model.last_name = patient.last_name
