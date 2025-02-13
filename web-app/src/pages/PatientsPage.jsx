@@ -25,11 +25,28 @@ const PatientsPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        fetchPatientsWithCache();
+    }, []);
+
+    useEffect(() => {
         if (!isModalVisible) {
-            const intervalId = setInterval(fetchPatients, 5000);
+            const intervalId = setInterval(fetchPatientsWithCache, 5000);
             return () => clearInterval(intervalId);
         }
     }, [user, isModalVisible]);
+
+    const fetchPatientsWithCache = async () => {
+        const cachedData = localStorage.getItem("patientsData");
+        const cacheTimestamp = localStorage.getItem("patientsTimestamp");
+
+        if (cachedData && cacheTimestamp && (Date.now() - parseInt(cacheTimestamp)) < 5 * 60 * 1000) {
+            setPatients(JSON.parse(cachedData));
+            setLoading(false);
+            return;
+        }
+
+        await fetchPatients();
+    };
 
     const fetchPatients = async () => {
         if (!user || !user.token) return;
@@ -37,6 +54,9 @@ const PatientsPage = () => {
         try {
             const data = await getAllPatients(user.token);
             setPatients(data);
+
+            localStorage.setItem("patientsData", JSON.stringify(data));
+            localStorage.setItem("patientsTimestamp", Date.now().toString());
         } catch (error) {
             console.log(error);
             notification.error({
