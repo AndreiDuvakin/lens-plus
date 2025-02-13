@@ -26,9 +26,9 @@ const MainLayout = () => {
     const menuItems = [
         getItem("Главная", "/", <HomeOutlined/>),
         getItem("Приёмы", "/appointments", <CalendarOutlined/>),
+        getItem("Выдачи линз", "/dispensing", <DatabaseOutlined/>),
         getItem("Линзы", "/lenses", <FolderViewOutlined/>),
         getItem("Пациенты", "/patients", <TeamOutlined/>),
-        getItem("Выдачи линз", "/dispensing", <DatabaseOutlined/>),
         getItem("Рассылки", "/mailing", <MessageOutlined/>),
         {type: "divider"},
         getItem("Мой профиль", "profile", <UserOutlined/>, [

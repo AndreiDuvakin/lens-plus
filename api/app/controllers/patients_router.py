@@ -37,3 +37,12 @@ async def update_patient(
 ):
     patients_service = PatientsService(db)
     return await patients_service.update_patient(patient_id, patient)
+
+@router.delete("/patients/{patient_id}/", response_model=bool)
+async def delete_patient(
+        patient_id: int,
+        db: AsyncSession = Depends(get_db),
+        user=Depends(get_current_user)
+):
+    patient_service = PatientsService(db)
+    return await patient_service.delete_patient(patient_id)

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.patients_repository import PatientsRepository
@@ -81,4 +82,12 @@ class PatientsService:
                 correction=patient_model.correction,
             )
 
-        return None
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    async def delete_patient(self, patient_id: int) -> Optional[bool]:
+        result = await self.patient_repository.delete(patient_id) is not None
+
+        if not result:
+            raise HTTPException(status_code=404, detail="Patient not found")
+
+        return result

@@ -2,6 +2,7 @@ import datetime
 from typing import Optional
 
 import jwt
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.users_repository import UsersRepository
@@ -21,7 +22,7 @@ class AuthService:
                 "user_id": user.id
             }
 
-        return None
+        raise HTTPException(status_code=403, detail="Invalid login or password")
 
     @staticmethod
     def create_access_token(data: dict) -> str:

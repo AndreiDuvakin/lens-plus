@@ -1,6 +1,7 @@
 import axios from "axios";
 import CONFIG from "../../core/Config.jsx";
 
+
 const getAllPatients = async (token) => {
 
     if (!token) {

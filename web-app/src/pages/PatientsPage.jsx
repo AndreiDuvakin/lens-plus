@@ -1,12 +1,13 @@
 import {useEffect, useState} from "react";
-import {Input, Select, List, FloatButton, Row, Col, message, Spin} from "antd";
+import {Input, Select, List, FloatButton, Row, Col, Spin} from "antd";
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 import getAllPatients from "../api/patients/GetAllPatients.jsx";
 import PatientListCard from "../components/PatientListCard.jsx";
 import PatientModal from "../components/PatientModal.jsx";
 import updatePatient from "../api/patients/UpdatePatient.jsx";
-import addPatient from "../api/patients/AddPatient.jsx"; // Подключаем модальное окно
+import addPatient from "../api/patients/AddPatient.jsx";
+import deletePatient from "../api/patients/DeletePatient.jsx"; // Подключаем модальное окно
 
 const {Option} = Select;
 
@@ -65,11 +66,22 @@ const PatientsPage = () => {
         setIsModalVisible(true);
     };
 
+    const handleDeletePatient = async (patient_id) => {
+        if (!user || !user.token) return;
+
+        try {
+            await deletePatient(user.token, patient_id);
+            await fetchPatients();
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
     const handleCancel = () => {
         setIsModalVisible(false);
     };
 
-    const handleSubmit = async (newPatient) => {
+    const handleModalPatientSubmit = async (newPatient) => {
         if (selectedPatient) {
 
             try {
@@ -82,7 +94,6 @@ const PatientsPage = () => {
             }
 
         }
-
 
         if (!selectedPatient) {
 
@@ -98,6 +109,7 @@ const PatientsPage = () => {
         }
 
         setIsModalVisible(false);
+        await fetchPatients();
     };
 
     return (<div style={{padding: 20}}>
@@ -127,22 +139,20 @@ const PatientsPage = () => {
             <List
                 grid={{gutter: 16, column: 1}}
                 dataSource={filteredPatients}
-                renderItem={(patient) => (<List.Item
-                    onClick={() => {
-                        handleEditPatient(patient);
-                    }}
-                >
-                    <PatientListCard patient={patient}/>
-                </List.Item>)}
+                renderItem={(patient) => (
+                    <List.Item>
+                        <PatientListCard
+                            patient={patient}
+                            handleEditPatient={handleEditPatient}
+                            handleDeletePatient={handleDeletePatient}
+                        />
+                    </List.Item>
+                )}
                 pagination={{
                     current,
                     pageSize,
                     showSizeChanger: true,
                     pageSizeOptions: ["5", "10", "20", "50"],
-                    onChange: (page, newPageSize) => {
-                        setCurrent(page);
-                        setPageSize(newPageSize);
-                    },
                 }}
             />
         )}
@@ -157,7 +167,7 @@ const PatientsPage = () => {
         <PatientModal
             visible={isModalVisible}
             onCancel={handleCancel}
-            onSubmit={handleSubmit}
+            onSubmit={handleModalPatientSubmit}
             patient={selectedPatient}
         />
     </div>);

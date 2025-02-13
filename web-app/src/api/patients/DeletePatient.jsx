@@ -2,9 +2,9 @@ import axios from "axios";
 import CONFIG from "../../core/Config.jsx";
 
 
-const AddPatient = async (token, patient) => {
+const DeletePatient = async (token, patient_id) => {
     try {
-        const response = await axios.post(`${CONFIG.BASE_URL}/patients/`, patient, {
+        const response = await axios.delete(`${CONFIG.BASE_URL}/patients/${patient_id}/`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -13,6 +13,7 @@ const AddPatient = async (token, patient) => {
     } catch (error) {
         throw new Error(error.message);
     }
-};
+}
 
-export default AddPatient;
+
+export default DeletePatient;
