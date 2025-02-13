@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Input, Select, List, FloatButton, Row, Col, Spin} from "antd";
+import {Input, Select, List, FloatButton, Row, Col, Spin, notification} from "antd";
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 import getAllPatients from "../api/patients/GetAllPatients.jsx";
@@ -7,7 +7,7 @@ import PatientListCard from "../components/PatientListCard.jsx";
 import PatientModal from "../components/PatientModal.jsx";
 import updatePatient from "../api/patients/UpdatePatient.jsx";
 import addPatient from "../api/patients/AddPatient.jsx";
-import deletePatient from "../api/patients/DeletePatient.jsx"; // Подключаем модальное окно
+import deletePatient from "../api/patients/DeletePatient.jsx";
 
 const {Option} = Select;
 
@@ -32,7 +32,6 @@ const PatientsPage = () => {
         }
     }, [user, isModalVisible]);
 
-
     const fetchPatients = async () => {
         if (!user || !user.token) return;
 
@@ -41,10 +40,15 @@ const PatientsPage = () => {
             setPatients(data);
         } catch (err) {
             setError(err.message);
+            notification.error({
+                message: "Ошибка загрузки данных",
+                description: "Проверьте подключение к сети.",
+                placement: "topRight",
+            })
         }
 
         if (loading) {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
@@ -72,8 +76,18 @@ const PatientsPage = () => {
         try {
             await deletePatient(user.token, patient_id);
             await fetchPatients();
+            notification.success({
+                message: "Пациент удалён",
+                description: "Пациент успешно удалён из базы.",
+                placement: "topRight",
+            });
         } catch (err) {
             setError(err.message);
+            notification.error({
+                message: "Ошибка удаления",
+                description: "Не удалось удалить пациента.",
+                placement: "topRight",
+            });
         }
     };
 
@@ -82,95 +96,95 @@ const PatientsPage = () => {
     };
 
     const handleModalPatientSubmit = async (newPatient) => {
-        if (selectedPatient) {
-
-            try {
+        try {
+            if (selectedPatient) {
                 await updatePatient(user.token, selectedPatient.id, newPatient);
-            } catch (error) {
-                if (error.response?.status === 401) {
-                    throw new Error("Ошибка авторизации: пользователь неяден или токен недействителен");
-                }
-                throw new Error(error.message);
-            }
-
-        }
-
-        if (!selectedPatient) {
-
-            try {
+                notification.success({
+                    message: "Пациент обновлён",
+                    description: `Данные пациента ${newPatient.first_name} ${newPatient.last_name} успешно обновлены.`,
+                    placement: "topRight",
+                });
+            } else {
                 await addPatient(user.token, newPatient);
-            } catch (error) {
-                if (error.response?.status === 401) {
-                    throw new Error("Ошибка авторизации: пользователь неяден или токен недействителен");
-                }
-                throw new Error(error.message);
+                notification.success({
+                    message: "Пациент добавлен",
+                    description: `Пациент ${newPatient.first_name} ${newPatient.last_name} успешно добавлен.`,
+                    placement: "topRight",
+                });
             }
-
+            setIsModalVisible(false);
+            await fetchPatients();
+        } catch (error) {
+            notification.error({
+                message: "Ошибка",
+                description: error.response?.status === 401
+                    ? "Ошибка авторизации: пользователь не найден или токен недействителен"
+                    : "Не удалось сохранить данные пациента.",
+                placement: "topRight",
+            });
         }
-
-        setIsModalVisible(false);
-        await fetchPatients();
     };
 
-    return (<div style={{padding: 20}}>
-        <Row gutter={[16, 16]} style={{marginBottom: 20}}>
-            <Col xs={24} sm={16}>
-                <Input
-                    placeholder="Поиск пациента"
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{width: "100%"}}
+    return (
+        <div style={{padding: 20}}>
+            <Row gutter={[16, 16]} style={{marginBottom: 20}}>
+                <Col xs={24} sm={16}>
+                    <Input
+                        placeholder="Поиск пациента"
+                        onChange={(e) => setSearchText(e.target.value)}
+                        style={{width: "100%"}}
+                    />
+                </Col>
+                <Col xs={24} sm={8}>
+                    <Select
+                        value={sortOrder}
+                        onChange={(value) => setSortOrder(value)}
+                        style={{width: "100%"}}
+                    >
+                        <Option value="asc">А-Я</Option>
+                        <Option value="desc">Я-А</Option>
+                    </Select>
+                </Col>
+            </Row>
+
+            {loading ? (
+                <Spin indicator={<LoadingOutlined style={{fontSize: 48}} spin/>}/>
+            ) : (
+                <List
+                    grid={{gutter: 16, column: 1}}
+                    dataSource={filteredPatients}
+                    renderItem={(patient) => (
+                        <List.Item>
+                            <PatientListCard
+                                patient={patient}
+                                handleEditPatient={handleEditPatient}
+                                handleDeletePatient={handleDeletePatient}
+                            />
+                        </List.Item>
+                    )}
+                    pagination={{
+                        current,
+                        pageSize,
+                        showSizeChanger: true,
+                        pageSizeOptions: ["5", "10", "20", "50"],
+                    }}
                 />
-            </Col>
-            <Col xs={24} sm={8}>
-                <Select
-                    value={sortOrder}
-                    onChange={(value) => setSortOrder(value)}
-                    style={{width: "100%"}}
-                >
-                    <Option value="asc">А-Я</Option>
-                    <Option value="desc">Я-А</Option>
-                </Select>
-            </Col>
-        </Row>
+            )}
 
-        {loading ? (
-            <Spin indicator={<LoadingOutlined style={{fontSize: 48}} spin/>}/>
-        ) : (
-            <List
-                grid={{gutter: 16, column: 1}}
-                dataSource={filteredPatients}
-                renderItem={(patient) => (
-                    <List.Item>
-                        <PatientListCard
-                            patient={patient}
-                            handleEditPatient={handleEditPatient}
-                            handleDeletePatient={handleDeletePatient}
-                        />
-                    </List.Item>
-                )}
-                pagination={{
-                    current,
-                    pageSize,
-                    showSizeChanger: true,
-                    pageSizeOptions: ["5", "10", "20", "50"],
-                }}
+            <FloatButton
+                icon={<PlusOutlined/>}
+                style={{position: "fixed", bottom: 20, right: 20}}
+                onClick={handleAddPatient}
             />
-        )}
 
-
-        <FloatButton
-            icon={<PlusOutlined/>}
-            style={{position: "fixed", bottom: 20, right: 20}}
-            onClick={handleAddPatient}
-        />
-
-        <PatientModal
-            visible={isModalVisible}
-            onCancel={handleCancel}
-            onSubmit={handleModalPatientSubmit}
-            patient={selectedPatient}
-        />
-    </div>);
+            <PatientModal
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                onSubmit={handleModalPatientSubmit}
+                patient={selectedPatient}
+            />
+        </div>
+    );
 };
 
 export default PatientsPage;
