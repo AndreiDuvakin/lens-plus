@@ -1,5 +1,5 @@
 from enum import Enum as PyEnum
-from sqlalchemy import Column, Integer, ForeignKey, Float, Enum
+from sqlalchemy import Column, Integer, ForeignKey, Float, Enum, Boolean
 from sqlalchemy.orm import relationship
 
 from app.domain.models import Base
@@ -22,6 +22,7 @@ class Lens(Base):
     diameter = Column(Float, nullable=False)
     periphery_toricity = Column(Float, nullable=False)  # Торичность перефирии
     side = Column(Enum(SideEnum), nullable=False)
+    issued = Column(Boolean, nullable=False, default=False)
 
     type_id = Column(Integer, ForeignKey('lenses_types.id'), nullable=False)
 

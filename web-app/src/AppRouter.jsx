@@ -3,6 +3,8 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import PatientsPage from "./pages/PatientsPage.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import LensPage from "./pages/LensPage.jsx";
 
 
 const AppRouter = () => (
@@ -12,7 +14,8 @@ const AppRouter = () => (
         <Route element={<PrivateRoute/>}>
             <Route element={<MainLayout/>}>
                 <Route path={"/patients"} element={<PatientsPage/>}/>
-                <Route path={"/"} element={<p>1234</p>}/>
+                <Route path={"/lenses"} element={<LensPage/>}/>
+                <Route path={"/"} element={<HomePage/>}/>
             </Route>
         </Route>
         <Route path={"*"} element={<Navigate to={"/"}/>}/>

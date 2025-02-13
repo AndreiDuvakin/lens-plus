@@ -16,7 +16,6 @@ const PatientsPage = () => {
     const [searchText, setSearchText] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
     const [patients, setPatients] = useState([]);
-    const [error, setError] = useState(null);
 
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -38,8 +37,8 @@ const PatientsPage = () => {
         try {
             const data = await getAllPatients(user.token);
             setPatients(data);
-        } catch (err) {
-            setError(err.message);
+        } catch (error) {
+            console.log(error);
             notification.error({
                 message: "Ошибка загрузки данных",
                 description: "Проверьте подключение к сети.",
@@ -53,7 +52,13 @@ const PatientsPage = () => {
     };
 
     const filteredPatients = patients
-        .filter((patient) => `${patient.first_name} ${patient.last_name}`.toLowerCase().includes(searchText.toLowerCase()))
+        .filter((patient) => {
+            const searchLower = searchText.toLowerCase();
+
+            return Object.values(patient)
+                .filter(value => typeof value === "string")
+                .some(value => value.toLowerCase().includes(searchLower));
+        })
         .sort((a, b) => {
             const fullNameA = `${a.last_name} ${a.first_name}`;
             const fullNameB = `${b.last_name} ${b.first_name}`;
@@ -81,8 +86,8 @@ const PatientsPage = () => {
                 description: "Пациент успешно удалён из базы.",
                 placement: "topRight",
             });
-        } catch (err) {
-            setError(err.message);
+        } catch (error) {
+            console.log(error);
             notification.error({
                 message: "Ошибка удаления",
                 description: "Не удалось удалить пациента.",
@@ -133,6 +138,7 @@ const PatientsPage = () => {
                         placeholder="Поиск пациента"
                         onChange={(e) => setSearchText(e.target.value)}
                         style={{width: "100%"}}
+                        allowClear
                     />
                 </Col>
                 <Col xs={24} sm={8}>
@@ -148,10 +154,24 @@ const PatientsPage = () => {
             </Row>
 
             {loading ? (
-                <Spin indicator={<LoadingOutlined style={{fontSize: 48}} spin/>}/>
-            ) : (
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100vh",
+                }}>
+                    <Spin indicator={<LoadingOutlined style={{fontSize: 64, color: "#1890ff"}} spin/>}/>
+                </div>) : (
                 <List
-                    grid={{gutter: 16, column: 1}}
+                    grid={{
+                        gutter: 16,
+                        xs: 1,
+                        sm: 1,
+                        md: 2,
+                        lg: 2,
+                        xl: 3,
+                        xxl: 3,
+                    }}
                     dataSource={filteredPatients}
                     renderItem={(patient) => (
                         <List.Item>
@@ -167,6 +187,10 @@ const PatientsPage = () => {
                         pageSize,
                         showSizeChanger: true,
                         pageSizeOptions: ["5", "10", "20", "50"],
+                        onChange: (page, newPageSize) => {
+                            setCurrent(page);
+                            setPageSize(newPageSize);
+                        },
                     }}
                 />
             )}
