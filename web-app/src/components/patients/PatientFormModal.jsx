@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 
 const {TextArea} = Input;
 
-const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
+const PatientFormModal = ({visible, onCancel, onSubmit, patient}) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -128,7 +128,7 @@ const PatientModal = ({visible, onCancel, onSubmit, patient}) => {
     );
 };
 
-PatientModal.propTypes = {
+PatientFormModal.propTypes = {
     visible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -145,4 +145,4 @@ PatientModal.propTypes = {
     }),
 };
 
-export default PatientModal;
+export default PatientFormModal;

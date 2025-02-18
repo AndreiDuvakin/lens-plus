@@ -3,8 +3,8 @@ import {Input, Select, List, FloatButton, Row, Col, Spin, notification} from "an
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 import getAllPatients from "../api/patients/GetAllPatients.jsx";
-import PatientListCard from "../components/PatientListCard.jsx";
-import PatientModal from "../components/PatientModal.jsx";
+import PatientListCard from "../components/patients/PatientListCard.jsx";
+import PatientFormModal from "../components/patients/PatientFormModal.jsx";
 import updatePatient from "../api/patients/UpdatePatient.jsx";
 import addPatient from "../api/patients/AddPatient.jsx";
 import deletePatient from "../api/patients/DeletePatient.jsx";
@@ -39,7 +39,7 @@ const PatientsPage = () => {
         const cachedData = localStorage.getItem("patientsData");
         const cacheTimestamp = localStorage.getItem("patientsTimestamp");
 
-        if (cachedData && cacheTimestamp && (Date.now() - parseInt(cacheTimestamp)) < 5 * 60 * 1000) {
+        if (cachedData && cacheTimestamp && (Date.now() - parseInt(cacheTimestamp)) < 60 * 1000) {
             setPatients(JSON.parse(cachedData));
             setLoading(false);
             return;
@@ -221,7 +221,7 @@ const PatientsPage = () => {
                 onClick={handleAddPatient}
             />
 
-            <PatientModal
+            <PatientFormModal
                 visible={isModalVisible}
                 onCancel={handleCancel}
                 onSubmit={handleModalPatientSubmit}
