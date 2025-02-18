@@ -30,7 +30,7 @@ const PatientsPage = () => {
 
     useEffect(() => {
         if (!isModalVisible) {
-            const intervalId = setInterval(fetchPatientsWithCache, 5000);
+            const intervalId = setInterval(fetchPatients, 5000);
             return () => clearInterval(intervalId);
         }
     }, [user, isModalVisible]);
@@ -181,7 +181,8 @@ const PatientsPage = () => {
                     height: "100vh",
                 }}>
                     <Spin indicator={<LoadingOutlined style={{fontSize: 64, color: "#1890ff"}} spin/>}/>
-                </div>) : (
+                </div>
+            ) : (
                 <List
                     grid={{
                         gutter: 16,

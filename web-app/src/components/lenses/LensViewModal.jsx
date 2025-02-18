@@ -37,7 +37,7 @@ const LensViewModal = ({visible, onCancel, lens}) => {
 
                 <Col xs={24} md={12}>
                     <div style={{marginBottom: 12}}>
-                        <Title level={5}>⚙️ Перефирийная торичность</Title>
+                        <Title level={5}>⚙️ Периферийная торичность</Title>
                         <Text>{lens.periphery_toricity} D</Text>
                     </div>
 
@@ -47,7 +47,7 @@ const LensViewModal = ({visible, onCancel, lens}) => {
                     </div>
 
                     <div style={{marginBottom: 12}}>
-                        <Title level={5}>✅ Статус выдачи</Title>
+                        <Title level={5}>{lens.issued ? '✅' : '❌'} Статус выдачи</Title>
                         <Text>{lens.issued ? 'Выдана' : 'Не выдана'}</Text>
                     </div>
                 </Col>
@@ -56,7 +56,7 @@ const LensViewModal = ({visible, onCancel, lens}) => {
             <Divider/>
 
             <div style={{marginBottom: 12}}>
-                <Title level={5}>⚖️ Пробная линза (Trial)</Title>
+                <Title level={5}>👀 Острота зрения (Trial)</Title>
                 <Text>{lens.trial.toFixed(2)} D</Text>
             </div>
         </Modal>

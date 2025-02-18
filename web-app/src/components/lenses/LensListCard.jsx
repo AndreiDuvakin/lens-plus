@@ -46,7 +46,7 @@ const LensListCard = ({ lens, handleEditLens, handleDeleteLens }) => {
                 <p><strong>🔬 Тор:</strong> {lens.tor} D</p>
                 <p><strong>📏 Диаметр:</strong> {lens.diameter} мм</p>
                 <p><strong>🔄 Пресетная рефракция:</strong> {lens.preset_refraction} D</p>
-                <p><strong>⚙️ Перефирийная торичность:</strong> {lens.periphery_toricity} D</p>
+                <p><strong>⚙️ Периферийная торичность:</strong> {lens.periphery_toricity} D</p>
                 {lens.issued && <p><strong>✅ Линза выдана</strong></p>}
             </Card>
 

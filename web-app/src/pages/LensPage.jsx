@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import {Input, Select, List, FloatButton, Row, Col, Spin} from "antd";
+import {Input, Select, List, FloatButton, Row, Col, Spin, Checkbox} from "antd";
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import LensCard from "../components/lenses/LensListCard.jsx";
 import getAllLenses from "../api/lenses/GetAllLenses.jsx";
@@ -21,11 +21,33 @@ const LensesPage = () => {
     const [lenses, setLenses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [showIssuedLenses, setShowIssuedLenses] = useState(false);
     const [selectedLens, setSelectedLens] = useState(null);
 
+
     useEffect(() => {
-        fetchLenses();
+        fetchLensWithCache();
     }, []);
+
+    useEffect(() => {
+        if (!isModalVisible) {
+            const intervalId = setInterval(fetchLenses, 5000);
+            return () => clearInterval(intervalId);
+        }
+    }, [user, isModalVisible]);
+
+    const fetchLensWithCache = async () => {
+        const cachedData = localStorage.getItem("lensData");
+        const cacheTimestamp = localStorage.getItem("lensTimestamp");
+
+        if (cachedData && cacheTimestamp && (Date.now() - parseInt(cacheTimestamp)) < 60 * 1000) {
+            setLenses(JSON.parse(cachedData));
+            setLoading(false);
+            return;
+        }
+
+        await fetchLenses();
+    };
 
     const fetchLenses = async () => {
         if (!user || !user.token) return;
@@ -43,7 +65,8 @@ const LensesPage = () => {
     const filteredLenses = lenses.filter((lens) =>
         Object.values(lens).some((value) =>
             value?.toString().toLowerCase().includes(searchText.toLowerCase())
-        )
+        ) &&
+        (showIssuedLenses || lens.issued === false)
     ).sort((a, b) => {
         return sortOrder === "asc"
             ? a.preset_refraction - b.preset_refraction
@@ -88,7 +111,7 @@ const LensesPage = () => {
     return (
         <div style={{padding: 20}}>
             <Row gutter={[16, 16]} style={{marginBottom: 20}}>
-                <Col xs={24} sm={16}>
+                <Col xs={24} sm={12}>
                     <Input
                         placeholder="Поиск линзы"
                         value={searchText}
@@ -107,10 +130,26 @@ const LensesPage = () => {
                         <Option value="desc">По убыванию рефракции</Option>
                     </Select>
                 </Col>
+                <Col xs={24} sm={4}>
+                    <Checkbox
+                        onChange={(e) => {
+                            setShowIssuedLenses(e.target.checked);
+                        }}
+                    >
+                        Показать выданные
+                    </Checkbox>
+                </Col>
             </Row>
 
             {loading ? (
-                <Spin indicator={<LoadingOutlined style={{fontSize: 48}} spin/>}/>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100vh",
+                }}>
+                    <Spin indicator={<LoadingOutlined style={{fontSize: 64, color: "#1890ff"}} spin/>}/>
+                </div>
             ) : (
                 <List
                     grid={{gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 4}}
