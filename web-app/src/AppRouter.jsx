@@ -1,5 +1,5 @@
 import {Routes, Route, Navigate} from "react-router-dom";
-import PrivateRoute from "./components/patients/PrivateRoute.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import PatientsPage from "./pages/PatientsPage.jsx";

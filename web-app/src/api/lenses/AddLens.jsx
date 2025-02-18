@@ -1,10 +1,11 @@
-import axios from "axios";
 import CONFIG from "../../core/Config.jsx";
+import axios from "axios";
+import {useAuth} from "../../AuthContext.jsx";
 
 
-const addPatient = async (token, patient) => {
+const addLens = async (token, lens) => {
     try {
-        const response = await axios.post(`${CONFIG.BASE_URL}/patients/`, patient, {
+        const response = await axios.post(`${CONFIG.BASE_URL}/lenses/`, lens, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -18,4 +19,4 @@ const addPatient = async (token, patient) => {
     }
 };
 
-export default addPatient;
+export default addLens;

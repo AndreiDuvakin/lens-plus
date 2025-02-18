@@ -23,7 +23,7 @@ class LensesService:
                 tor=lens.tor,
                 trial=lens.trial,
                 esa=lens.esa,
-                fvc=lens.fvs,
+                fvc=lens.fvc,
                 preset_refraction=lens.preset_refraction,
                 diameter=lens.diameter,
                 periphery_toricity=lens.periphery_toricity,

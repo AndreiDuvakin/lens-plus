@@ -3,10 +3,6 @@ import CONFIG from "../../core/Config.jsx";
 
 
 const updatePatient = async (token, patientId, patientData) => {
-    if (!token) {
-        throw new Error("Ошибка авторизации: пользователь не аутентифицирован");
-    }
-
     try {
         const response = await axios.put(`${CONFIG.BASE_URL}/patients/${patientId}/`, patientData, {
             headers: {

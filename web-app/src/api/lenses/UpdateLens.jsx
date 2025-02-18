@@ -1,10 +1,9 @@
 import axios from "axios";
-import CONFIG from "../../core/Config.jsx";
 
 
-const addPatient = async (token, patient) => {
+const updateLens = async (token, lensId, lensData) => {
     try {
-        const response = await axios.post(`${CONFIG.BASE_URL}/patients/`, patient, {
+        const response = await axios.put(`${CONFIG.BASE_URL}/lenses/${lensId}/`, lensData, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -18,4 +17,4 @@ const addPatient = async (token, patient) => {
     }
 };
 
-export default addPatient;
+export default updateLens;
