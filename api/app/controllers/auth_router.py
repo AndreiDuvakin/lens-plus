@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.session import get_db
@@ -22,14 +22,7 @@ async def auth_user(
         db: AsyncSession = Depends(get_db)
 ):
     auth_service = AuthService(db)
-
     token = await auth_service.authenticate_user(user_data.login, user_data.password)
-
-    if token is None:
-        raise HTTPException(
-            status_code=401,
-            detail="Incorrect username or password"
-        )
 
     response.set_cookie(
         key="users_access_token",

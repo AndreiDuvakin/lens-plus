@@ -24,9 +24,9 @@ class Lens(Base):
     side = Column(Enum(SideEnum), nullable=False)
     issued = Column(Boolean, nullable=False, default=False)
 
-    type_id = Column(Integer, ForeignKey('lenses_types.id'), nullable=False)
+    type_id = Column(Integer, ForeignKey('lens_types.id'), nullable=False)
 
-    type = relationship('LensesType', back_populates='lenses')
+    type = relationship('LensType', back_populates='lenses')
 
     set = relationship('SetLens', back_populates='lens')
     lens_issues = relationship('LensIssue', back_populates='lens')

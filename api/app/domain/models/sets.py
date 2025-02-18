@@ -11,4 +11,5 @@ class Set(Base):
     title = Column(VARCHAR(150), nullable=False, unique=True)
     count = Column(Integer, nullable=False)
 
+    contents = relationship('SetContent', back_populates='set')
     lens = relationship('SetLens', back_populates='set')

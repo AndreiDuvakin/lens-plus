@@ -13,6 +13,11 @@ class LensesRepository:
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
+    async def get_by_id(self, lens_id: int):
+        stmt = select(Lens).filter(Lens.id == lens_id)
+        result = await self.db.execute(stmt)
+        return result.scalars().first()
+
     async def create(self, lens: Lens):
         self.db.add(lens)
         await self.db.commit()

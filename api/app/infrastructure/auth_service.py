@@ -4,6 +4,7 @@ from typing import Optional
 import jwt
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
 
 from app.application.users_repository import UsersRepository
 from app.settings import get_auth_data
@@ -22,7 +23,7 @@ class AuthService:
                 "user_id": user.id
             }
 
-        raise HTTPException(status_code=403, detail="Invalid login or password")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid login or password")
 
     @staticmethod
     def create_access_token(data: dict) -> str:
