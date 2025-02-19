@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -11,7 +11,7 @@ class UsersRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_all(self):
+    async def get_all(self) -> Sequence[User]:
         stmt = select(User)
         result = await self.db.execute(stmt)
         return result.scalars().all()

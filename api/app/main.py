@@ -4,7 +4,8 @@ from starlette.middleware.cors import CORSMiddleware
 from app.controllers.auth_router import router as auth_router
 from app.controllers.register_routes import router as register_router
 from app.controllers.patients_router import router as patients_router
-from app.controllers.lenses_router import router as lens_router
+from app.controllers.lenses_router import router as lenses_router
+from app.controllers.lens_types_router import router as lens_types_router
 from app.settings import settings
 
 
@@ -22,7 +23,8 @@ def start_app():
     api_app.include_router(auth_router, prefix=settings.APP_PREFIX, tags=['auth'])
     api_app.include_router(register_router, prefix=settings.APP_PREFIX, tags=['register'])
     api_app.include_router(patients_router, prefix=settings.APP_PREFIX, tags=['patients'])
-    api_app.include_router(lens_router, prefix=settings.APP_PREFIX, tags=['lenses'])
+    api_app.include_router(lenses_router, prefix=settings.APP_PREFIX, tags=['lenses'])
+    api_app.include_router(lens_types_router, prefix=settings.APP_PREFIX, tags=['lens_types'])
 
     return api_app
 
