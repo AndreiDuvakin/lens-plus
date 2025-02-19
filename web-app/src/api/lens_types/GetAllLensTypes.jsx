@@ -2,10 +2,9 @@ import axios from "axios";
 import CONFIG from "../../core/Config.jsx";
 
 
-const updateLens = async (token, lensId, lensData) => {
-    console.log(lensId, lensData);
+const getAllLensTypes = async (token) => {
     try {
-        const response = await axios.put(`${CONFIG.BASE_URL}/lenses/${lensId}/`, lensData, {
+        const response = await axios.get(`${CONFIG.BASE_URL}/lens_types/`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -19,4 +18,4 @@ const updateLens = async (token, lensId, lensData) => {
     }
 };
 
-export default updateLens;
+export default getAllLensTypes;

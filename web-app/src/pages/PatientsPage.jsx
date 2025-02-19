@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Input, Select, List, FloatButton, Row, Col, Spin, notification} from "antd";
+import {Input, Select, List, FloatButton, Row, Col, Spin, notification, Tooltip} from "antd";
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 import getAllPatients from "../api/patients/GetAllPatients.jsx";
@@ -162,14 +162,18 @@ const PatientsPage = () => {
                     />
                 </Col>
                 <Col xs={24} sm={8}>
-                    <Select
-                        value={sortOrder}
-                        onChange={(value) => setSortOrder(value)}
-                        style={{width: "100%"}}
+                    <Tooltip
+                        title={"Сортировка пациентов"}
                     >
-                        <Option value="asc">А-Я</Option>
-                        <Option value="desc">Я-А</Option>
-                    </Select>
+                        <Select
+                            value={sortOrder}
+                            onChange={(value) => setSortOrder(value)}
+                            style={{width: "100%"}}
+                        >
+                            <Option value="asc">А-Я</Option>
+                            <Option value="desc">Я-А</Option>
+                        </Select>
+                    </Tooltip>
                 </Col>
             </Row>
 
@@ -218,8 +222,10 @@ const PatientsPage = () => {
 
             <FloatButton
                 icon={<PlusOutlined/>}
-                style={{position: "fixed", bottom: 20, right: 20}}
+                type="primary"
+                style={{position: "fixed", bottom: 40, right: 40}}
                 onClick={handleAddPatient}
+                tooltip="Добавить пациента"
             />
 
             <PatientFormModal

@@ -1,6 +1,5 @@
 import CONFIG from "../../core/Config.jsx";
 import axios from "axios";
-import {useAuth} from "../../AuthContext.jsx";
 
 
 const addLens = async (token, lens) => {

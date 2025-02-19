@@ -1,4 +1,4 @@
-import {Button, Col, Modal, Row, Typography, Divider} from "antd";
+import {Button, Col, Modal, Row, Typography} from "antd";
 import PropTypes from "prop-types";
 
 const {Text, Title} = Typography;
@@ -30,8 +30,18 @@ const LensViewModal = ({visible, onCancel, lens}) => {
                     </div>
 
                     <div style={{marginBottom: 12}}>
+                        <Title level={5}>🔭 FVC</Title>
+                        <Text>{lens.fvc} мм</Text>
+                    </div>
+
+                    <div style={{marginBottom: 12}}>
                         <Title level={5}>🔄 Пресетная рефракция</Title>
                         <Text>{lens.preset_refraction} D</Text>
+                    </div>
+
+                    <div style={{marginBottom: 12}}>
+                        <Title level={5}>👀 Острота зрения (Trial)</Title>
+                        <Text>{lens.trial.toFixed(2)} D</Text>
                     </div>
                 </Col>
 
@@ -47,18 +57,16 @@ const LensViewModal = ({visible, onCancel, lens}) => {
                     </div>
 
                     <div style={{marginBottom: 12}}>
+                        <Title level={5}>👓 Esa</Title>
+                        <Text>{lens.esa}</Text>
+                    </div>
+
+                    <div style={{marginBottom: 12}}>
                         <Title level={5}>{lens.issued ? '✅' : '❌'} Статус выдачи</Title>
                         <Text>{lens.issued ? 'Выдана' : 'Не выдана'}</Text>
                     </div>
                 </Col>
             </Row>
-
-            <Divider/>
-
-            <div style={{marginBottom: 12}}>
-                <Title level={5}>👀 Острота зрения (Trial)</Title>
-                <Text>{lens.trial.toFixed(2)} D</Text>
-            </div>
         </Modal>
     );
 };
@@ -69,11 +77,13 @@ LensViewModal.propTypes = {
     lens: PropTypes.shape({
         tor: PropTypes.number.isRequired,
         diameter: PropTypes.number.isRequired,
+        esa: PropTypes.number.isRequired,
+        fvc: PropTypes.number.isRequired,
         preset_refraction: PropTypes.number.isRequired,
         periphery_toricity: PropTypes.number.isRequired,
         side: PropTypes.string.isRequired,
         issued: PropTypes.bool.isRequired,
-        trial: PropTypes.number.isRequired,  // Указываем, что это число
+        trial: PropTypes.number.isRequired,
     }),
 };
 

@@ -4,7 +4,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import PatientsPage from "./pages/PatientsPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
-import LensPage from "./pages/LensPage.jsx";
+import LensPage from "./pages/LensesPage.jsx";
 
 
 const AppRouter = () => (

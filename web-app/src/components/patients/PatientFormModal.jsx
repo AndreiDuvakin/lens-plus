@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {Modal, Form, Input, DatePicker} from "antd";
+import {Modal, Form, Input, DatePicker, notification} from "antd";
 import PropTypes from "prop-types";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import validator from "validator";
@@ -31,8 +31,13 @@ const PatientFormModal = ({visible, onCancel, onSubmit, patient}) => {
             }
             onSubmit(values);
             form.resetFields();
-        } catch (errorInfo) {
-            console.log("Validation Failed:", errorInfo);
+        } catch (error) {
+            console.log("Validation Failed:", error);
+            notification.error({
+                message: "Ошибка валидации",
+                description: "Проверьте правильность заполнения полей.",
+                placement: "topRight",
+            });
         }
     };
 
@@ -45,14 +50,14 @@ const PatientFormModal = ({visible, onCancel, onSubmit, patient}) => {
                 onCancel();
             }}
             onOk={handleOk}
-            okText="Сохранить"
-            cancelText="Отмена"
-            centered
+            okText={"Сохранить"}
+            cancelText={"Отмена"}
             maskClosable={false}
             forceRender={true}
             style={{top: 20}}
+            centered
         >
-            <Form form={form} layout="vertical">
+            <Form form={form} layout={"vertical"}>
                 <Form.Item
                     name="first_name"
                     label="Имя"
@@ -78,7 +83,11 @@ const PatientFormModal = ({visible, onCancel, onSubmit, patient}) => {
                     label="Дата рождения"
                     rules={[{required: true, message: "Выберите дату рождения"}]}
                 >
-                    <DatePicker style={{width: "100%"}} locale={locale} format="DD.MM.YYYY"/>
+                    <DatePicker
+                        style={{width: "100%"}}
+                        locale={locale} format="DD.MM.YYYY"
+                        maxDate={dayjs(new Date())}
+                    />
                 </Form.Item>
                 <Form.Item
                     name="address"
