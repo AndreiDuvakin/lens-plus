@@ -1,13 +1,12 @@
 from sqlalchemy import Column, Integer, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class LensIssue(Base):
+class LensIssue(BaseModel):
     __tablename__ = 'lens_issues'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     issue_date = Column(Date, nullable=False)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)

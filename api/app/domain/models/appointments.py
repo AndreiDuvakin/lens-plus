@@ -1,13 +1,12 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class Appointment(Base):
+class Appointment(BaseModel):
     __tablename__ = 'appointments'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     results = Column(String)
     days_until_the_next_appointment = Column(Integer)
 

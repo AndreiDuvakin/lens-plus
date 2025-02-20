@@ -1,14 +1,13 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class Mailing(Base):
+class Mailing(BaseModel):
     __tablename__ = 'mailing'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     text = Column(String, nullable=False)
     title = Column(String, nullable=False)
     datetime = Column(DateTime, nullable=False, default=func.utcnow)

@@ -1,13 +1,11 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class Recipient(Base):
+class Recipient(BaseModel):
     __tablename__ = 'recipients'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
 
     patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
     mailing_id = Column(Integer, ForeignKey('mailing.id'), nullable=False)

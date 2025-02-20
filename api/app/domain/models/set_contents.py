@@ -1,13 +1,12 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class SetContent(Base):
+class SetContent(BaseModel):
     __tablename__ = 'set_contents'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     tor = Column(Integer, nullable=False)
     trial = Column(Integer, nullable=False)
     esa = Column(Integer, nullable=False)

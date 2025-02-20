@@ -1,8 +1,9 @@
 from enum import Enum as PyEnum
+
 from sqlalchemy import Column, Integer, ForeignKey, Float, Enum, Boolean
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
 class SideEnum(PyEnum):
@@ -10,10 +11,9 @@ class SideEnum(PyEnum):
     RIGHT = 'правая'
 
 
-class Lens(Base):
+class Lens(BaseModel):
     __tablename__ = 'lens'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     tor = Column(Float, nullable=False)
     trial = Column(Float, nullable=False)
     esa = Column(Float, nullable=False)

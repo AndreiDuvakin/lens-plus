@@ -1,13 +1,12 @@
-from sqlalchemy import Column, Integer, VARCHAR, Date, String
+from sqlalchemy import Column, VARCHAR, Date, String
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class Patient(Base):
+class Patient(BaseModel):
     __tablename__ = 'patients'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(VARCHAR(200), nullable=False)
     last_name = Column(VARCHAR(200), nullable=False)
     patronymic = Column(VARCHAR(200))

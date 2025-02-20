@@ -2,13 +2,12 @@ from sqlalchemy import Column, Integer, VARCHAR, ForeignKey, String
 from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class User(Base):
+class User(BaseModel):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(VARCHAR(200), nullable=False)
     last_name = Column(VARCHAR(200), nullable=False)
     patronymic = Column(VARCHAR(200))

@@ -1,13 +1,12 @@
 from sqlalchemy import Column, Integer, VARCHAR
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class Set(Base):
+class Set(BaseModel):
     __tablename__ = 'sets'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(VARCHAR(150), nullable=False, unique=True)
     count = Column(Integer, nullable=False)
 

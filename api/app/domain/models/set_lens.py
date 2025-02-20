@@ -1,13 +1,11 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from app.domain.models import Base
+from app.domain.models.base import BaseModel
 
 
-class SetLens(Base):
+class SetLens(BaseModel):
     __tablename__ = 'set_lens'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
 
     set_id = Column(Integer, ForeignKey('sets.id'), nullable=False)
     lens_id = Column(Integer, ForeignKey('lens.id'), nullable=False, unique=True)
