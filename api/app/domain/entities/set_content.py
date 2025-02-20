@@ -15,4 +15,5 @@ class SetContentEntity(BaseModel):
     side: str
     count: int
 
+    type_id: int
     set_id: int

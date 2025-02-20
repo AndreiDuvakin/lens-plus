@@ -6,6 +6,7 @@ from app.controllers.lens_types_router import router as lens_types_router
 from app.controllers.lenses_router import router as lenses_router
 from app.controllers.patients_router import router as patients_router
 from app.controllers.register_routes import router as register_router
+from app.controllers.set_content_router import router as set_content_router
 from app.controllers.sets_router import router as sets_router
 from app.settings import settings
 
@@ -27,6 +28,7 @@ def start_app():
     api_app.include_router(lenses_router, prefix=settings.APP_PREFIX, tags=['lenses'])
     api_app.include_router(lens_types_router, prefix=settings.APP_PREFIX, tags=['lens_types'])
     api_app.include_router(sets_router, prefix=settings.APP_PREFIX, tags=['sets'])
+    api_app.include_router(set_content_router, prefix=settings.APP_PREFIX, tags=['set_content'])
 
     return api_app
 

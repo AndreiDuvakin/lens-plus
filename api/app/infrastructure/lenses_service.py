@@ -1,4 +1,4 @@
-from typing import Optional, Any, Coroutine
+from typing import Optional
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -41,7 +41,7 @@ class LensesService:
         if not lens_type:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail='The lens type with this ID was not found'
+                detail='The lens type with this ID was not found',
             )
 
         try:

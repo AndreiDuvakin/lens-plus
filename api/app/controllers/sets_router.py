@@ -51,7 +51,7 @@ async def update_set(
         user=Depends(get_current_user),
 ):
     sets_service = SetsService(db)
-    return sets_service.update_set(set_id, _set)
+    return await sets_service.update_set(set_id, _set)
 
 
 @router.delete(
