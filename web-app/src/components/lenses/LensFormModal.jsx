@@ -1,4 +1,4 @@
-import {Form, InputNumber, Modal, notification, Select} from "antd";
+import {Col, Form, InputNumber, Modal, notification, Row, Select} from "antd";
 import {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import getAllLensTypes from "../../api/lens_types/GetAllLensTypes.jsx";
@@ -7,14 +7,12 @@ import {useAuth} from "../../AuthContext.jsx";
 
 const LensFormModal = ({visible, onCancel, onSubmit, lens}) => {
     const {user} = useAuth();
-
     const [form] = Form.useForm();
-
     const [lensTypes, setLensTypes] = useState([]);
 
     useEffect(() => {
         fetchLensTypes();
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (visible) {
@@ -22,7 +20,7 @@ const LensFormModal = ({visible, onCancel, onSubmit, lens}) => {
             if (lens) {
                 form.setFieldsValue({
                     ...lens,
-                })
+                });
             }
         }
     }, [visible, lens]);
@@ -39,7 +37,7 @@ const LensFormModal = ({visible, onCancel, onSubmit, lens}) => {
                 placement: "topRight",
             });
         }
-    }
+    };
 
     const handleOk = async () => {
         try {
@@ -47,7 +45,7 @@ const LensFormModal = ({visible, onCancel, onSubmit, lens}) => {
             onSubmit(values);
             form.resetFields();
         } catch (error) {
-            console.log("Validation Failed:", error)
+            console.log("Validation Failed:", error);
         }
     };
 
@@ -68,83 +66,123 @@ const LensFormModal = ({visible, onCancel, onSubmit, lens}) => {
             centered
         >
             <Form form={form} layout={"vertical"}>
-                <Form.Item
-                    name="tor"
-                    label="Тор"
-                    rules={[{required: true, message: "Введите тор"}]}
-                >
-                    <InputNumber
-                        step={0.1}
-                    />
-                </Form.Item>
-
-                <Form.Item
-                    name="trial"
-                    label="Острота зрения (Trial)"
-                    rules={[{required: true, message: "Введите остроту зрения"}]}
-                >
-                    <InputNumber
-                        step={0.1}
-                    />
-                </Form.Item>
-
-                <Form.Item
-                    name="esa"
-                    label="Esa"
-                    rules={[{required: true, message: "Введите esa"}]}
-                >
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item
-                    name="fvc"
-                    label="FVC"
-                    rules={[{required: true, message: "Введите fvc"}]}
-                >
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item
-                    name="preset_refraction"
-                    label="Пресетная рефракция"
-                    rules={[{required: true, message: "Введите пресетную рефракцию"}]}
-                >
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item
-                    name="diameter"
-                    label="Диаметр"
-                    rules={[{required: true, message: "Введите диаметр"}]}
-                >
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item
-                    name="periphery_toricity"
-                    label="Периферия торичность"
-                    rules={[{required: true, message: "Введите периферию торичность"}]}
-                >
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item
-                    name="side"
-                    label="Сторона"
-                    rules={[{required: true, message: "Выберите сторону"}]}
-                >
-                    <Select>
-                        <Select.Option value="left">Левая</Select.Option>
-                        <Select.Option value="right">Правая</Select.Option>
-                    </Select>
-                </Form.Item>
-
+                <Row gutter={16}>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="tor"
+                            label="Тор"
+                            rules={[{required: true, message: "Введите тор"}]}
+                        >
+                            <InputNumber
+                                style={{width: '100%'}}
+                                step={0.1}
+                                
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="trial"
+                            label="Острота зрения (Trial)"
+                            rules={[{required: true, message: "Введите остроту зрения"}]}
+                        >
+                            <InputNumber
+                                style={{width: '100%'}}
+                                step={0.1}
+                                
+                            />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="esa"
+                            label="Esa"
+                            rules={[{required: true, message: "Введите esa"}]}
+                        >
+                            <InputNumber
+                                style={{width: '100%'}}
+                                step={0.1}
+                                
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="fvc"
+                            label="FVC"
+                            rules={[{required: true, message: "Введите fvc"}]}
+                        >
+                            <InputNumber
+                                style={{width: '100%'}}
+                                step={0.1}
+                                
+                            />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="preset_refraction"
+                            label="Пресетная рефракция"
+                            rules={[{required: true, message: "Введите пресетную рефракцию"}]}
+                        >
+                            <InputNumber
+                                style={{width: '100%'}}
+                                step={0.1}
+                                
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="diameter"
+                            label="Диаметр"
+                            rules={[{required: true, message: "Введите диаметр"}]}
+                        >
+                            <InputNumber
+                                style={{width: '100%'}}
+                                step={0.1}
+                                
+                            />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="periphery_toricity"
+                            label="Периферия торичность"
+                            rules={[{required: true, message: "Введите периферию торичность"}]}
+                        >
+                            <InputNumber
+                                style={{width: '100%'}}
+                                step={0.1}
+                                
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={24} md={12}>
+                        <Form.Item
+                            name="side"
+                            label="Сторона"
+                            rules={[{required: true, message: "Выберите сторону"}]}
+                        >
+                            <Select style={{width: '100%'}}>
+                                <Select.Option value="левая">Левая</Select.Option>
+                                <Select.Option value="правая">Правая</Select.Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
                 <Form.Item
                     name="type_id"
                     label="Тип линзы"
                     rules={[{required: true, message: "Выберите тип линзы"}]}
                 >
-                    <Select>
+                    <Select style={{width: '100%'}}>
                         {lensTypes.map((type) => (
                             <Select.Option key={type.id} value={type.id}>
                                 {type.title}
@@ -154,7 +192,7 @@ const LensFormModal = ({visible, onCancel, onSubmit, lens}) => {
                 </Form.Item>
             </Form>
         </Modal>
-    )
+    );
 };
 
 LensFormModal.propTypes = {

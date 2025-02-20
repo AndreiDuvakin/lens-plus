@@ -4,7 +4,7 @@ import CONFIG from "../../core/Config.jsx";
 
 const deleteLens = async (token, lens_id) => {
     try {
-        const response = await axios.delete(`${CONFIG.BASE_URL}/lenses/${lens_id}`, {
+        const response = await axios.delete(`${CONFIG.BASE_URL}/lenses/${lens_id}/`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
