@@ -4,7 +4,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import PatientsPage from "./pages/PatientsPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
-import LensPage from "./pages/LensesPage.jsx";
+import LensesLayout from "./layouts/LensesLayout.jsx";
 
 
 const AppRouter = () => (
@@ -14,7 +14,7 @@ const AppRouter = () => (
         <Route element={<PrivateRoute/>}>
             <Route element={<MainLayout/>}>
                 <Route path={"/patients"} element={<PatientsPage/>}/>
-                <Route path={"/lenses"} element={<LensPage/>}/>
+                <Route path={"/lenses"} element={<LensesLayout/>}/>
                 <Route path={"/"} element={<HomePage/>}/>
             </Route>
         </Route>
