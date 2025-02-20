@@ -59,36 +59,51 @@ class PatientsService:
 
     async def update_patient(self, patient_id: int, patient: PatientEntity) -> Optional[PatientEntity]:
         patient_model = await self.patient_repository.get_by_id(patient_id)
-        if patient_model:
-            patient_model.first_name = patient.first_name
-            patient_model.last_name = patient.last_name
-            patient_model.patronymic = patient.patronymic
-            patient_model.birthday = patient.birthday
-            patient_model.address = patient.address
-            patient_model.email = patient.email
-            patient_model.phone = patient.phone
-            patient_model.diagnosis = patient.diagnosis
-            patient_model.correction = patient.correction
-            await self.patient_repository.update(patient_model)
-            return PatientEntity(
-                id=patient_model.id,
-                first_name=patient_model.first_name,
-                last_name=patient_model.last_name,
-                patronymic=patient_model.patronymic,
-                birthday=patient_model.birthday,
-                address=patient_model.address,
-                email=patient_model.email,
-                phone=patient_model.phone,
-                diagnosis=patient_model.diagnosis,
-                correction=patient_model.correction,
-            )
 
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Patient not found")
-
-    async def delete_patient(self, patient_id: int) -> Optional[bool]:
-        result = await self.patient_repository.delete(patient_id) is not None
-
-        if not result:
+        if not patient_model:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Patient not found")
 
-        return result
+        patient_model.first_name = patient.first_name
+        patient_model.last_name = patient.last_name
+        patient_model.patronymic = patient.patronymic
+        patient_model.birthday = patient.birthday
+        patient_model.address = patient.address
+        patient_model.email = patient.email
+        patient_model.phone = patient.phone
+        patient_model.diagnosis = patient.diagnosis
+        patient_model.correction = patient.correction
+        await self.patient_repository.update(patient_model)
+        return PatientEntity(
+            id=patient_model.id,
+            first_name=patient_model.first_name,
+            last_name=patient_model.last_name,
+            patronymic=patient_model.patronymic,
+            birthday=patient_model.birthday,
+            address=patient_model.address,
+            email=patient_model.email,
+            phone=patient_model.phone,
+            diagnosis=patient_model.diagnosis,
+            correction=patient_model.correction,
+        )
+
+
+    async def delete_patient(self, patient_id: int) -> Optional[PatientEntity]:
+        patient = await self.patient_repository.get_by_id(patient_id)
+
+        if not patient:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Patient not found")
+
+        result = await self.patient_repository.delete(patient)
+
+        return PatientEntity(
+            id=result.id,
+            first_name=result.first_name,
+            last_name=result.last_name,
+            patronymic=result.patronymic,
+            birthday=result.birthday,
+            address=result.address,
+            email=result.email,
+            phone=result.phone,
+            diagnosis=result.diagnosis,
+            correction=result.correction,
+        )

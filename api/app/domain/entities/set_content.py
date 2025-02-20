@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class LensEntity(BaseModel):
+class SetContentEntity(BaseModel):
     id: Optional[int] = None
     tor: float
     trial: float
@@ -13,6 +13,6 @@ class LensEntity(BaseModel):
     diameter: float
     periphery_toricity: float
     side: str
-    issued: bool = False
+    count: int
 
-    type_id: int
+    set_id: int

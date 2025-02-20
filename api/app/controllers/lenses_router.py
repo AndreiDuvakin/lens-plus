@@ -56,7 +56,7 @@ async def update_lens(
 
 @router.delete(
     "/lenses/{lens_id}/",
-    response_model=bool,
+    response_model=LensEntity,
     summary="Delete lens",
     description="Deletes an existing lens",
 )

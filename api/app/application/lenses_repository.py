@@ -1,6 +1,6 @@
 from typing import Sequence, Optional
 
-from sqlalchemy import select, Row, RowMapping
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.models import Lens
@@ -31,14 +31,7 @@ class LensesRepository:
         await self.db.commit()
         return lens
 
-    async def delete(self, lens_id: int) -> Row[Lens] | RowMapping | None:
-        stmt = select(Lens).filter(Lens.id == lens_id)
-        result = await self.db.execute(stmt)
-        lens = result.scalars().first()
-
-        if lens:
-            await self.db.delete(lens)
-            await self.db.commit()
-            return lens
-
-        return None
+    async def delete(self, lens: Lens) -> Lens:
+        await self.db.delete(lens)
+        await self.db.commit()
+        return lens

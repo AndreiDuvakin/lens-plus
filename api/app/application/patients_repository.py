@@ -1,6 +1,6 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
-from sqlalchemy import select, Row, RowMapping
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.models import Patient
@@ -15,7 +15,7 @@ class PatientsRepository:
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
-    async def get_by_id(self, patient_id: int) -> Patient:
+    async def get_by_id(self, patient_id: int) -> Optional[Patient]:
         stmt = select(Patient).filter(Patient.id == patient_id)
         result = await self.db.execute(stmt)
         return result.scalars().first()
@@ -31,14 +31,7 @@ class PatientsRepository:
         await self.db.commit()
         return patient
 
-    async def delete(self, patient_id: int) -> Row[Patient] | RowMapping | None:
-        stmt = select(Patient).filter(Patient.id == patient_id)
-        result = await self.db.execute(stmt)
-        patient = result.scalars().first()
-
-        if patient:
-            await self.db.delete(patient)
-            await self.db.commit()
-            return patient
-
-        return None
+    async def delete(self, patient: Patient) -> Patient:
+        await self.db.delete(patient)
+        await self.db.commit()
+        return patient

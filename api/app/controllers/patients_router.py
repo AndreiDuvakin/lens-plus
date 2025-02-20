@@ -56,7 +56,7 @@ async def update_patient(
 
 @router.delete(
     "/patients/{patient_id}/",
-    response_model=bool,
+    response_model=PatientEntity,
     summary="Delete a patient",
     description="Deletes a patient",
 )
