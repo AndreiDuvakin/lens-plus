@@ -10,3 +10,4 @@ class LensType(BaseModel):
     title = Column(VARCHAR(150), nullable=False, unique=True)
 
     lenses = relationship('Lens', back_populates='type')
+    contents = relationship('SetContent', back_populates='type')

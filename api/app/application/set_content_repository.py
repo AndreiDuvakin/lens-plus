@@ -25,6 +25,12 @@ class SetContentRepository:
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
+    async def create_list(self, sets_content: list[SetContent]) -> list[SetContent]:
+        self.db.add_all(sets_content)
+        await self.db.commit()
+        await self.db.refresh(sets_content)
+        return sets_content
+
     async def create(self, set_content: SetContent) -> SetContent:
         self.db.add(set_content)
         await self.db.commit()
@@ -40,3 +46,8 @@ class SetContentRepository:
         await self.db.delete(set_content)
         await self.db.commit()
         return set_content
+
+    async def delete_list_sets(self, sets_content: list[SetContent]) -> list[SetContent]:
+        await self.db.delete(sets_content)
+        await self.db.commit()
+        return sets_content

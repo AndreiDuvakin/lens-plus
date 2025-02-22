@@ -16,46 +16,16 @@ class PatientsService:
     async def get_all_patients(self) -> list[PatientEntity]:
         patients = await self.patient_repository.get_all()
         return [
-            PatientEntity(
-                id=patient.id,
-                first_name=patient.first_name,
-                last_name=patient.last_name,
-                patronymic=patient.patronymic,
-                birthday=patient.birthday,
-                address=patient.address,
-                email=patient.email,
-                phone=patient.phone,
-                diagnosis=patient.diagnosis,
-                correction=patient.correction,
-            )
+            self.model_to_entity(patient)
             for patient in patients
         ]
 
     async def create_patient(self, patient: PatientEntity) -> PatientEntity:
-        patient_model = Patient(
-            first_name=patient.first_name,
-            last_name=patient.last_name,
-            patronymic=patient.patronymic,
-            birthday=patient.birthday,
-            address=patient.address,
-            email=patient.email,
-            phone=patient.phone,
-            diagnosis=patient.diagnosis,
-            correction=patient.correction,
-        )
+        patient_model = self.entity_to_model(patient)
+
         await self.patient_repository.create(patient_model)
-        return PatientEntity(
-            id=patient_model.id,
-            first_name=patient_model.first_name,
-            last_name=patient_model.last_name,
-            patronymic=patient_model.patronymic,
-            birthday=patient_model.birthday,
-            address=patient_model.address,
-            email=patient_model.email,
-            phone=patient_model.phone,
-            diagnosis=patient_model.diagnosis,
-            correction=patient_model.correction,
-        )
+
+        return self.model_to_entity(patient_model)
 
     async def update_patient(self, patient_id: int, patient: PatientEntity) -> Optional[PatientEntity]:
         patient_model = await self.patient_repository.get_by_id(patient_id)
@@ -72,20 +42,10 @@ class PatientsService:
         patient_model.phone = patient.phone
         patient_model.diagnosis = patient.diagnosis
         patient_model.correction = patient.correction
-        await self.patient_repository.update(patient_model)
-        return PatientEntity(
-            id=patient_model.id,
-            first_name=patient_model.first_name,
-            last_name=patient_model.last_name,
-            patronymic=patient_model.patronymic,
-            birthday=patient_model.birthday,
-            address=patient_model.address,
-            email=patient_model.email,
-            phone=patient_model.phone,
-            diagnosis=patient_model.diagnosis,
-            correction=patient_model.correction,
-        )
 
+        await self.patient_repository.update(patient_model)
+
+        return self.model_to_entity(patient_model)
 
     async def delete_patient(self, patient_id: int) -> Optional[PatientEntity]:
         patient = await self.patient_repository.get_by_id(patient_id)
@@ -95,15 +55,38 @@ class PatientsService:
 
         result = await self.patient_repository.delete(patient)
 
+        return self.model_to_entity(result)
+
+    @staticmethod
+    def model_to_entity(patient: Patient) -> PatientEntity:
         return PatientEntity(
-            id=result.id,
-            first_name=result.first_name,
-            last_name=result.last_name,
-            patronymic=result.patronymic,
-            birthday=result.birthday,
-            address=result.address,
-            email=result.email,
-            phone=result.phone,
-            diagnosis=result.diagnosis,
-            correction=result.correction,
+            id=patient.id,
+            first_name=patient.first_name,
+            last_name=patient.last_name,
+            patronymic=patient.patronymic,
+            birthday=patient.birthday,
+            address=patient.address,
+            email=patient.email,
+            phone=patient.phone,
+            diagnosis=patient.diagnosis,
+            correction=patient.correction,
         )
+
+    @staticmethod
+    def entity_to_model(patient: PatientEntity) -> Patient:
+        patient_model = Patient(
+            first_name=patient.first_name,
+            last_name=patient.last_name,
+            patronymic=patient.patronymic,
+            birthday=patient.birthday,
+            address=patient.address,
+            email=patient.email,
+            phone=patient.phone,
+            diagnosis=patient.diagnosis,
+            correction=patient.correction,
+        )
+
+        if patient.id is not None:
+            patient_model.id = patient.id
+
+        return patient_model

@@ -21,5 +21,5 @@ class SetContent(BaseModel):
     type_id = Column(Integer, ForeignKey('lens_types.id'), nullable=False)
     set_id = Column(Integer, ForeignKey('sets.id'), nullable=False)
 
-    type = relationship('LensType', back_populates='lenses')
+    type = relationship('LensType', back_populates='contents')
     set = relationship('Set', back_populates='contents')

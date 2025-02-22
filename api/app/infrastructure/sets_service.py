@@ -30,7 +30,7 @@ class SetsService:
         await self.sets_repository.create(set_model)
         return SetEntity(
             id=set_model.id,
-            title=set_model.id,
+            title=set_model.title,
         )
 
     async def update_set(self, set_id: int, _set: SetEntity) -> SetEntity:
@@ -59,4 +59,17 @@ class SetsService:
         return SetEntity(
             id=result.id,
             title=result.title,
+        )
+
+    @staticmethod
+    def model_to_entity(_set: Set) -> SetEntity:
+        return SetEntity(
+            id=_set.id,
+            title=_set.title,
+        )
+
+    @staticmethod
+    def entity_to_model(_set: SetEntity) -> Set:
+        set_model = Set(
+            title=_set.title,
         )

@@ -25,46 +25,32 @@ async def get_set_content_by_set_id(
 
 
 @router.post(
-    '/set_content/',
-    response_model=SetContentEntity,
-    summary='Create a new set content',
-    description='Create a new set content',
+    '/set_content/{set_id}/',
+    response_model=list[SetContentEntity],
+    summary='Create a new set content by set_id',
+    description='Create a new set content by set_id',
 )
 async def create_set_content(
-        set_content: SetContentEntity,
+        set_id: int,
+        set_content: list[SetContentEntity],
         db: AsyncSession = Depends(get_db),
         user=Depends(get_current_user),
 ):
     set_content_service = SetContentService(db)
-    return await set_content_service.create_set_content(set_content)
+    return await set_content_service.create_list_sets(set_id, set_content)
 
 
 @router.put(
-    '/set_content/{set_content_id}/',
-    response_model=SetContentEntity,
-    summary='Update a set content',
-    description='Update a set content',
+    '/set_content/{set_id}/',
+    response_model=list[SetContentEntity],
+    summary='Update a set content by set_id',
+    description='Update a set content by set_id',
 )
 async def update_set_content(
-        set_content_id: int,
-        set_content: SetContentEntity,
+        set_id: int,
+        set_content: list[SetContentEntity],
         db: AsyncSession = Depends(get_db),
         user=Depends(get_current_user),
 ):
     set_content_service = SetContentService(db)
-    return await set_content_service.update_set_content(set_content_id, set_content)
-
-
-@router.delete(
-    '/set_content/{set_content_id}/',
-    response_model=SetContentEntity,
-    summary='Delete set content',
-    description='Delete an existing set content',
-)
-async def delete_set_content(
-        set_content_id: int,
-        db: AsyncSession = Depends(get_db),
-        user=Depends(get_current_user),
-):
-    set_content_service = SetContentService(db)
-    return await set_content_service.delete_set_content(set_content_id)
+    return await set_content_service.update_set_content_by_set_id(set_id, set_content)
