@@ -28,7 +28,10 @@ class SetContentRepository:
     async def create_list(self, sets_content: list[SetContent]) -> list[SetContent]:
         self.db.add_all(sets_content)
         await self.db.commit()
-        await self.db.refresh(sets_content)
+
+        for set_content in sets_content:
+            await self.db.refresh(set_content)
+
         return sets_content
 
     async def create(self, set_content: SetContent) -> SetContent:
