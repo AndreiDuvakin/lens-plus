@@ -1,10 +1,10 @@
-import { Card, Modal, Tooltip } from "antd";
+import {Card, Modal, Tooltip} from "antd";
 import PropTypes from "prop-types";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import {DeleteOutlined, EditOutlined, EyeOutlined} from "@ant-design/icons";
+import {useState} from "react";
 import LensViewModal from "./LensViewModal.jsx";
 
-const LensListCard = ({ lens, handleEditLens, handleDeleteLens }) => {
+const LensListCard = ({lens, handleEditLens, handleDeleteLens}) => {
     const [showModalInfo, setShowModalInfo] = useState(false);
 
     const deleteLensConfirm = () => {
@@ -23,15 +23,15 @@ const LensListCard = ({ lens, handleEditLens, handleDeleteLens }) => {
 
     const actions = [
         <Tooltip title="Просмотр линзы" key={"viewLens"}>
-            <EyeOutlined onClick={handleViewLens} />
+            <EyeOutlined onClick={handleViewLens}/>
         </Tooltip>,
         <Tooltip title="Редактирование линзы" key={"editLens"}>
-            <EditOutlined onClick={() => handleEditLens(lens)} />
+            <EditOutlined onClick={() => handleEditLens(lens)}/>
         </Tooltip>,
         <Tooltip title="Удаление линзы" key={"deleteLens"}>
             <DeleteOutlined
                 onClick={deleteLensConfirm}
-                style={{ color: "red" }}
+                style={{color: "red"}}
             />
         </Tooltip>,
     ];
@@ -50,13 +50,11 @@ const LensListCard = ({ lens, handleEditLens, handleDeleteLens }) => {
                 {lens.issued && <p><strong>✅ Линза выдана</strong></p>}
             </Card>
 
-            {showModalInfo && (
-                <LensViewModal
-                    visible={showModalInfo}
-                    onCancel={() => setShowModalInfo(false)}
-                    lens={lens}
-                />
-            )}
+            <LensViewModal
+                visible={showModalInfo}
+                onCancel={() => setShowModalInfo(false)}
+                lens={lens}
+            />
         </>
     );
 };

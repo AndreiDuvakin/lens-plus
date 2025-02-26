@@ -124,11 +124,9 @@ const LensesPage = () => {
     };
 
     const handleDeleteLens = async (lensId) => {
-        if (!user || !user.token) return;
-
         try {
             await deleteLens(user.token, lensId);
-            fetchLenses(user.token);
+            await fetchLenses(user.token);
             notification.success({
                 message: "Линза удалена",
                 description: "Линза успешно удалена.",
@@ -215,7 +213,6 @@ const LensesPage = () => {
                         boxShadow: "0 1px 6px rgba(0, 0, 0, 0.15)",
                         borderRadius: 8
                     }}
-                    type={"inner"}
                 >
                     <Row gutter={16}>
                         <Col xs={24} sm={12}>

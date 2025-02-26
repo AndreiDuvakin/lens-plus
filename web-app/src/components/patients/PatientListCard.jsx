@@ -61,14 +61,12 @@ const PatientListCard = ({patient, handleEditPatient, handleDeletePatient}) => {
                 {patient.email && <p><strong>✉️ Email:</strong> {patient.email}</p>}
             </Card>
 
-            {showModalInfo && (
-                <PatientViewModal
-                    visible={showModalInfo}
-                    onCancel={() => setShowModalInfo(false)}
-                    patient={patient}
-                />
-            )}
-        </>
+            <PatientViewModal
+                visible={showModalInfo}
+                onCancel={() => setShowModalInfo(false)}
+                patient={patient}
+            />
+            </>
     );
 };
 

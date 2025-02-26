@@ -96,8 +96,6 @@ const PatientsPage = () => {
     };
 
     const handleDeletePatient = async (patient_id) => {
-        if (!user || !user.token) return;
-
         try {
             await deletePatient(user.token, patient_id);
             await fetchPatients();
@@ -123,19 +121,9 @@ const PatientsPage = () => {
     const handleModalPatientSubmit = async (newPatient) => {
         try {
             if (selectedPatient) {
-                await updatePatient(user.token, selectedPatient.id, newPatient);
-                notification.success({
-                    message: "Пациент обновлён",
-                    description: `Данные пациента ${newPatient.first_name} ${newPatient.last_name} успешно обновлены.`,
-                    placement: "topRight",
-                });
+                await editPatient(newPatient);
             } else {
-                await addPatient(user.token, newPatient);
-                notification.success({
-                    message: "Пациент добавлен",
-                    description: `Пациент ${newPatient.first_name} ${newPatient.last_name} успешно добавлен.`,
-                    placement: "topRight",
-                });
+                await addPatient(newPatient);
             }
             setIsModalVisible(false);
             await fetchPatients();
@@ -148,6 +136,24 @@ const PatientsPage = () => {
                 placement: "topRight",
             });
         }
+    };
+
+    const editPatient = async (patient) => {
+        await updatePatient(user.token, selectedPatient.id, patient);
+        notification.success({
+            message: "Пациент обновлён",
+            description: `Данные пациента ${patient.first_name} ${patient.last_name} успешно обновлены.`,
+            placement: "topRight",
+        });
+    };
+
+    const addPatient = async (patient) => {
+        await addPatient(user.token, patient);
+        notification.success({
+            message: "Пациент добавлен",
+            description: `Пациент ${patient.first_name} ${patient.last_name} успешно добавлен.`,
+            placement: "topRight",
+        });
     };
 
     return (

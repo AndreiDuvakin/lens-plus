@@ -2,9 +2,9 @@ import axios from "axios";
 import CONFIG from "../../core/Config.jsx";
 
 
-const AddSet = async (token, set) => {
+const addSet = async (token, set) => {
     try {
-        const response = await axios.post(`${CONFIG.API_URL}/sets`, set, {
+        const response = await axios.post(`${CONFIG.BASE_URL}/sets/`, set, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -18,4 +18,4 @@ const AddSet = async (token, set) => {
     }
 };
 
-export default AddSet;
+export default addSet;

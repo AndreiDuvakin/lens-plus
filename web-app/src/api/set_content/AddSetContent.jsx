@@ -2,9 +2,9 @@ import axios from "axios";
 import CONFIG from "../../core/Config.jsx";
 
 
-const addSetContent = async (token, set_content) => {
+const addSetContent = async (token, set_content, set_id) => {
     try {
-        const response = await axios.post(`${CONFIG.BASE_URL}/set_content/`, set_content, {
+        const response = await axios.post(`${CONFIG.BASE_URL}/set_content/${set_id}/`, set_content, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

@@ -1,21 +1,10 @@
-import {useState, useEffect} from "react";
 import {
-    Input,
-    Select,
-    List,
-    FloatButton,
-    Row,
-    Col,
-    Spin,
-    Button,
-    Form,
-    InputNumber,
-    Card, Grid, notification, Tabs
+    Tabs
 } from "antd";
 import LensesPage from "../pages/LensesPage.jsx";
 import {FolderViewOutlined, SwitcherOutlined} from "@ant-design/icons";
+import SetLensesPage from "../pages/SetLensesPage.jsx";
 
-const {Option} = Select;
 
 const items = [
     {
@@ -27,7 +16,7 @@ const items = [
     {
         key: '2',
         label: 'Наборы линз',
-        children: '1233',
+        children: <SetLensesPage/>,
         icon: <SwitcherOutlined/>
     }
 ]
