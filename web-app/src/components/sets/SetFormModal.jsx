@@ -75,6 +75,31 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
         }]);
     };
 
+    const validateContent = () => {
+        for (const item of content) {
+            if (
+                item.tor === null ||
+                item.trial === null ||
+                item.esa === null ||
+                item.fvc === null ||
+                item.preset_refraction === null ||
+                item.diameter === null ||
+                item.periphery_toricity === null ||
+                item.side === null ||
+                item.count === null ||
+                item.type_id === null
+            ) {
+                notification.error({
+                    message: "Ошибка валидации",
+                    description: "Все поля в таблице должны быть заполнены перед сохранением.",
+                    placement: "topRight",
+                });
+                return false;
+            }
+        }
+        return true;
+    };
+
     const updateContentItem = (index, field, value) => {
         const updated = [...content];
         updated[index][field] = value;
@@ -87,6 +112,7 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
 
     const handleSubmit = () => {
         form.validateFields().then(values => {
+            if (!validateContent()) return;
             onSubmit({...values}, content);
         });
     };
