@@ -63,7 +63,7 @@ class SetContentService:
                 )
 
             sets_content_models.append(
-                self.entity_to_model(content, set_id)
+                self.entity_to_model(content, set_id, skip_id=True)
             )
 
         await self.set_content_repository.create_list(sets_content_models)
@@ -124,7 +124,7 @@ class SetContentService:
         result = []
 
         for content in sets_content:
-            model_content = self.entity_to_model(content)
+            model_content = self.entity_to_model(content, set_id, skip_id=True)
             model_content = await self.set_content_repository.create(model_content)
             result.append(model_content)
 
@@ -184,7 +184,7 @@ class SetContentService:
         return self.model_to_entity(result)
 
     @staticmethod
-    def entity_to_model(set_content: SetContentEntity, set_id=None) -> SetContent:
+    def entity_to_model(set_content: SetContentEntity, set_id=None, skip_id=False) -> SetContent:
 
         if set_id is None:
             set_id = set_content.set_id
@@ -211,7 +211,7 @@ class SetContentService:
             set_id=set_id,
         )
 
-        if set_content.id is not None:
+        if set_content.id is not None and not skip_id:
             set_content_model.id = set_content.id
 
         return set_content_model

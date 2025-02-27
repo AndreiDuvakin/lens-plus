@@ -16,4 +16,4 @@ class SetContentEntity(BaseModel):
     count: int
 
     type_id: int
-    set_id: int
+    set_id: Optional[int] = None

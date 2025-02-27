@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Enum
+from sqlalchemy import Column, Integer, ForeignKey, Enum, Float
 from sqlalchemy.orm import relationship
 
 from app.domain.models.base import BaseModel
@@ -8,13 +8,13 @@ from app.domain.models.lens import SideEnum
 class SetContent(BaseModel):
     __tablename__ = 'set_contents'
 
-    tor = Column(Integer, nullable=False)
-    trial = Column(Integer, nullable=False)
-    esa = Column(Integer, nullable=False)
-    fvc = Column(Integer, nullable=False)
-    preset_refraction = Column(Integer, nullable=False)
-    diameter = Column(Integer, nullable=False)
-    periphery_toricity = Column(Integer, nullable=False)
+    tor = Column(Float, nullable=False)
+    trial = Column(Float, nullable=False)
+    esa = Column(Float, nullable=False)
+    fvc = Column(Float, nullable=False)
+    preset_refraction = Column(Float, nullable=False)
+    diameter = Column(Float, nullable=False)
+    periphery_toricity = Column(Float, nullable=False)
     side = Column(Enum(SideEnum), nullable=False)
     count = Column(Integer, nullable=False)
 

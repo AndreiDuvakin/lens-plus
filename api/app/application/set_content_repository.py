@@ -51,6 +51,8 @@ class SetContentRepository:
         return set_content
 
     async def delete_list_sets(self, sets_content: list[SetContent]) -> list[SetContent]:
-        await self.db.delete(sets_content)
+        for set_content in sets_content:
+            await self.db.delete(set_content)
+
         await self.db.commit()
         return sets_content
