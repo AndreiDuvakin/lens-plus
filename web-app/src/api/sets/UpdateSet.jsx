@@ -2,9 +2,9 @@ import axios from "axios";
 import CONFIG from "../../core/Config.jsx";
 
 
-const updateSet = async (token, set) => {
+const updateSet = async (token, set_id, set) => {
     try {
-        const response = await axios.put(`${CONFIG.BASE_URL}/sets/${set.id}/`, set, {
+        const response = await axios.put(`${CONFIG.BASE_URL}/sets/${set_id}/`, set, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

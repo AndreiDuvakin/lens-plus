@@ -23,11 +23,10 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
 
     useEffect(() => {
         if (setData) {
-            form.setFieldsValue({ title: setData.title || "" });
+            form.setFieldsValue({title: setData.title || ""});
         }
         fetchSetContents();
     }, [setData, form]);
-
 
 
     const fetchSetContents = async () => {
@@ -70,7 +69,7 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
             preset_refraction: 0,
             diameter: 0,
             periphery_toricity: 0,
-            side: "left",
+            side: "левая",
             count: 1,
             type_id: null
         }]);
@@ -88,7 +87,7 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
 
     const handleSubmit = () => {
         form.validateFields().then(values => {
-            onSubmit({...values, contents: content});
+            onSubmit({...values}, content);
         });
     };
 
@@ -163,8 +162,8 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
                 value={record.side}
                 onChange={value => updateContentItem(index, "side", value)}
             >
-                <Option value="left">Левая</Option>
-                <Option value="right">Правая</Option>
+                <Option value="левая">Левая</Option>
+                <Option value="правая">Правая</Option>
             </Select>,
         },
         {
@@ -232,7 +231,7 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
                     rowKey="id"
                     pagination={false}
                     scroll={{x: "max-content", y: 300}}
-                    locale={{ emptyText: "Добавьте элементы" }}
+                    locale={{emptyText: "Добавьте элементы"}}
                 />
             </div>
 

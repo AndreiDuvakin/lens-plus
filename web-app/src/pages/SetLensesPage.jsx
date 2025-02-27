@@ -9,6 +9,7 @@ import updateSet from "../api/sets/UpdateSet.jsx";
 import addSet from "../api/sets/AddSet.jsx";
 import deleteSet from "../api/sets/DeleteSet.jsx";
 import addSetContent from "../api/set_content/AddSetContent.jsx";
+import updateSetContent from "../api/set_content/UpdateSetContent.jsx";
 
 
 const SetLensesPage = () => {
@@ -114,7 +115,9 @@ const SetLensesPage = () => {
                 refreshed_set = await addNewSet(set);
             }
 
-            if (refreshed_set) {
+            if (refreshed_set && selectedSet) {
+                await updateContent(content, refreshed_set.id);
+            } else if (refreshed_set && !selectedSet) {
                 await setContent(content, refreshed_set.id);
             }
 
@@ -132,7 +135,21 @@ const SetLensesPage = () => {
 
     const setContent = async (content, set_id) => {
         try {
+            console.log(content);
             await addSetContent(user.token, content, set_id);
+        } catch (error) {
+            console.error("Ошибка сохранения набора:", error);
+            notification.error({
+                message: "Ошибка сохранения набора",
+                description: "Проверьте подключение к сети.",
+                placement: "topRight",
+            });
+        }
+    };
+
+    const updateContent = async (content, set_id) => {
+        try {
+            await updateSetContent(user.token, content, set_id);
         } catch (error) {
             console.error("Ошибка сохранения набора:", error);
             notification.error({
