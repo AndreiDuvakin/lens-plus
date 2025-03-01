@@ -10,7 +10,7 @@ import {
     Button,
     Form,
     InputNumber,
-    Card, Grid, notification, Dropdown, Table, Popconfirm
+    Card, Grid, notification, Table, Popconfirm
 } from "antd";
 import {LoadingOutlined, PlusOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
 import LensCard from "../components/lenses/LensListCard.jsx";
@@ -33,11 +33,12 @@ const LensesPage = () => {
 
     const [searchText, setSearchText] = useState("");
     const [viewMode, setViewMode] = useState("tile");
-    const [lenses, setLenses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedLens, setSelectedLens] = useState(null);
     const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+
+    const [selectedLens, setSelectedLens] = useState(null);
+    const [lenses, setLenses] = useState([]);
 
     const [searchParams, setSearchParams] = useState({
         tor: null,
@@ -293,10 +294,11 @@ const LensesPage = () => {
     const TableView = () => (
         <Table
             columns={columns}
-            dataSource={filteredLenses}
+            dataSource={filteredLenses.map(lens => ({...lens, key: lens.id}))}
             scroll={{
                 x: "max-content"
             }}
+            showSorterTooltip={false}
             pagination={{
                 current,
                 pageSize,

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Input, Select, List, FloatButton, Row, Col, Spin, notification, Tooltip} from "antd";
+import {Input, Select, List, FloatButton, Row, Col, Spin, notification, Tooltip, Table, Button, Popconfirm} from "antd";
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 import getAllPatients from "../api/patients/GetAllPatients.jsx";
@@ -15,6 +15,7 @@ const PatientsPage = () => {
     const {user} = useAuth();
     const [searchText, setSearchText] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
+    const [viewMode, setViewMode] = useState("tile");
     const [patients, setPatients] = useState([]);
 
     const [current, setCurrent] = useState(1);
@@ -157,10 +158,130 @@ const PatientsPage = () => {
         });
     };
 
+    const TileView = () => (
+        <List
+            grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 1,
+                md: 2,
+                lg: 2,
+                xl: 3,
+                xxl: 3,
+            }}
+            dataSource={filteredPatients}
+            renderItem={(patient) => (
+                <List.Item>
+                    <PatientListCard
+                        patient={patient}
+                        handleEditPatient={handleEditPatient}
+                        handleDeletePatient={handleDeletePatient}
+                    />
+                </List.Item>
+            )}
+            pagination={{
+                current,
+                pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                onChange: (page, newPageSize) => {
+                    setCurrent(page);
+                    setPageSize(newPageSize);
+                },
+            }}
+        />
+    );
+
+    const columns = [
+        {
+            title: "Фамилия",
+            dataIndex: "last_name",
+            key: "last_name",
+            sorter: (a, b) => a.last_name.localeCompare(b.last_name),
+            sortDirections: ["ascend", "descend"],
+        },
+        {
+            title: "Имя",
+            dataIndex: "first_name",
+            key: "first_name",
+            sorter: (a, b) => a.first_name.localeCompare(b.first_name),
+            sortDirections: ["ascend", "descend"],
+        },
+        {
+            title: "Отчество",
+            dataIndex: "patronymic",
+            key: "patronymic",
+            sorter: (a, b) => a.patronymic.localeCompare(b.patronymic),
+            sortDirections: ["ascend", "descend"],
+        },
+        {
+            title: "Дата рождения",
+            dataIndex: "birthday",
+            key: "birthday",
+            sorter: (a, b) => new Date(a.birthday).getTime() - new Date(b.birthday).getTime(),
+            sortDirections: ["ascend", "descend"],
+            render: (date) => new Date(date).toLocaleDateString()
+        },
+        {
+            title: "Телефон",
+            dataIndex: "phone",
+            key: "phone",
+        },
+        {
+            title: "Email",
+            dataIndex: "email",
+            key: "email",
+        },
+        {
+            title: "Действия",
+            key: "actions",
+            fixed: 'right',
+            render: (text, record) => (
+                <Row gutter={[8, 8]}>
+                    <Col xs={24} xl={12}>
+                        <Button block onClick={() => handleEditPatient(record)}>Изменить</Button>
+                    </Col>
+
+                    <Col xs={24} xl={12}>
+                        <Popconfirm
+                            title="Вы уверены, что хотите удалить пациента?"
+                            onConfirm={() => handleDeletePatient(record.id)}
+                            okText="Да, удалить"
+                            cancelText="Отмена"
+                        >
+                            <Button danger block>Удалить</Button>
+                        </Popconfirm>
+                    </Col>
+                </Row>
+            ),
+        },
+    ];
+
+    const TableView = () => (
+        <Table
+            columns={columns}
+            dataSource={filteredPatients.map(patient => ({...patient, key: patient.id}))}
+            scroll={{
+                x: "max-content"
+            }}
+            showSorterTooltip={false}
+            pagination={{
+                current,
+                pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                onChange: (page, newPageSize) => {
+                    setCurrent(page);
+                    setPageSize(newPageSize);
+                },
+            }}
+        />
+    )
+
     return (
         <div style={{padding: 20}}>
             <Row gutter={[16, 16]} style={{marginBottom: 20}}>
-                <Col xs={24} sm={16}>
+                <Col xs={24} md={14} sm={10} xl={16}>
                     <Input
                         placeholder="Поиск пациента"
                         onChange={(e) => setSearchText(e.target.value)}
@@ -168,7 +289,7 @@ const PatientsPage = () => {
                         allowClear
                     />
                 </Col>
-                <Col xs={24} sm={8}>
+                <Col xs={24} md={5} sm={6} xl={2}>
                     <Tooltip
                         title={"Сортировка пациентов"}
                     >
@@ -182,6 +303,16 @@ const PatientsPage = () => {
                         </Select>
                     </Tooltip>
                 </Col>
+                <Col xs={24} md={5} sm={8} xl={6}>
+                    <Select
+                        value={viewMode}
+                        onChange={(value) => setViewMode(value)}
+                        style={{width: "100%"}}
+                    >
+                        <Option value={"tile"}>Плиткой</Option>
+                        <Option value={"table"}>Таблицей</Option>
+                    </Select>
+                </Col>
             </Row>
 
             {loading ? (
@@ -193,38 +324,10 @@ const PatientsPage = () => {
                 }}>
                     <Spin indicator={<LoadingOutlined style={{fontSize: 64, color: "#1890ff"}} spin/>}/>
                 </div>
+            ) : viewMode === "tile" ? (
+                <TileView/>
             ) : (
-                <List
-                    grid={{
-                        gutter: 16,
-                        xs: 1,
-                        sm: 1,
-                        md: 2,
-                        lg: 2,
-                        xl: 3,
-                        xxl: 3,
-                    }}
-                    dataSource={filteredPatients}
-                    renderItem={(patient) => (
-                        <List.Item>
-                            <PatientListCard
-                                patient={patient}
-                                handleEditPatient={handleEditPatient}
-                                handleDeletePatient={handleDeletePatient}
-                            />
-                        </List.Item>
-                    )}
-                    pagination={{
-                        current,
-                        pageSize,
-                        showSizeChanger: true,
-                        pageSizeOptions: ["5", "10", "20", "50"],
-                        onChange: (page, newPageSize) => {
-                            setCurrent(page);
-                            setPageSize(newPageSize);
-                        },
-                    }}
-                />
+                <TableView/>
             )}
 
             <FloatButton
