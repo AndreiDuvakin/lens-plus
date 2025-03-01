@@ -71,7 +71,7 @@ const SetFormModal = ({visible, onCancel, setData, onSubmit}) => {
             periphery_toricity: 0,
             side: "левая",
             count: 1,
-            type_id: null
+            type_id: lensTypes ? lensTypes[0].id : null
         }]);
     };
 

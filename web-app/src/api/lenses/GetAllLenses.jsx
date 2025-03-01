@@ -10,7 +10,7 @@ const getAllLenses = async (token) => {
         });
         return response.data;
     } catch (error) {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 403) {
             throw Error("Ошибка авторизации: пользователь неяден или токен недействителен");
         }
         throw Error(error.message);

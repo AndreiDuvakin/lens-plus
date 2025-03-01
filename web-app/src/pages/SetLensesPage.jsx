@@ -1,6 +1,6 @@
 import {useAuth} from "../AuthContext.jsx";
 import {useEffect, useState} from "react";
-import {Col, FloatButton, Input, List, notification, Row, Select, Spin, Tooltip} from "antd";
+import {FloatButton, Input, List, notification, Row, Spin} from "antd";
 import getAllSets from "../api/sets/GetAllSets.jsx";
 import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import SetListCard from "../components/sets/SetListCard.jsx";
@@ -10,6 +10,7 @@ import addSet from "../api/sets/AddSet.jsx";
 import deleteSet from "../api/sets/DeleteSet.jsx";
 import addSetContent from "../api/set_content/AddSetContent.jsx";
 import updateSetContent from "../api/set_content/UpdateSetContent.jsx";
+import appendLensesFromSet from "../api/sets/AppendLensesFromSet.jsx";
 
 
 const SetLensesPage = () => {
@@ -103,6 +104,24 @@ const SetLensesPage = () => {
 
     const handleCancel = () => {
         setIsModalVisible(false);
+    };
+
+    const handleAppendSet = async (set) => {
+        try {
+            await appendLensesFromSet(user.token, set.id);
+            notification.success({
+                message: "Линзы добавлены",
+                description: "Линзы успешно добавлены.",
+                placement: "topRight",
+            });
+        } catch (error) {
+            console.error("Ошибка добавления линз:", error);
+            notification.error({
+                message: "Ошибка добавления линз",
+                description: "Проверьте подключение к сети.",
+                placement: "topRight",
+            });
+        }
     };
 
     const handleModalSetSubmit = async (set, content = []) => {
@@ -217,8 +236,8 @@ const SetLensesPage = () => {
                             <SetListCard
                                 set={set}
                                 handleEditSet={handleEditSet}
-                                handleAddSet={handleAddSet}
                                 handleDeleteSet={handleDeleteSet}
+                                handleAppendSet={handleAppendSet}
                             />
                         </List.Item>
                     )}

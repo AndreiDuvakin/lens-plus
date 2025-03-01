@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import {Card, Modal, Tooltip} from "antd";
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 
-const SetListCard = ({set, handleEditSet, handleAddSet, handleDeleteSet}) => {
+const SetListCard = ({set, handleEditSet, handleDeleteSet, handleAppendSet}) => {
 
     const confirmSetDelete = () => {
         Modal.confirm({
@@ -14,10 +14,20 @@ const SetListCard = ({set, handleEditSet, handleAddSet, handleDeleteSet}) => {
         });
     };
 
+    const confirmAppendSet = () => {
+        Modal.confirm({
+            title: "Добавление набора",
+            content: `Вы уверены, что хотите добавить набор ${set.title} в общий список линз?`,
+            okText: "Да, добавить",
+            cancelText: "Отмена",
+            onOk: () => handleAppendSet(set),
+        });
+    };
+
     const actions = [
-        <Tooltip title="Добавить набор" key={"add"}>
+        <Tooltip title="Добавление набора в общий список линз" key={"add"}>
             <PlusOutlined
-                onClick={handleAddSet}
+                onClick={confirmAppendSet}
             />
         </Tooltip>,
 
@@ -54,7 +64,7 @@ SetListCard.propTypes = {
         title: PropTypes.string.isRequired,
     }).isRequired,
     handleEditSet: PropTypes.func.isRequired,
-    handleAddSet: PropTypes.func.isRequired,
+    handleAppendSet: PropTypes.func.isRequired,
     handleDeleteSet: PropTypes.func.isRequired,
 };
 

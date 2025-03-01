@@ -11,7 +11,7 @@ const addPatient = async (token, patient) => {
         });
         return response.data;
     } catch (error) {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 403) {
             throw new Error("Ошибка авторизации: пользователь не найден или токен недействителен");
         }
         throw new Error(error.message);

@@ -8,7 +8,7 @@ const loginUser = async (loginData) => {
         });
         return response.data.access_token;
     } catch (error) {
-        if (error.status === 401) {
+        if (error.status === 403) {
             throw new Error("Неверное имя пользователя или пароль")
         }
 
