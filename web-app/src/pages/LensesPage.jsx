@@ -10,7 +10,7 @@ import {
     Button,
     Form,
     InputNumber,
-    Card, Grid, notification
+    Card, Grid, notification, Dropdown, Table, Popconfirm
 } from "antd";
 import {LoadingOutlined, PlusOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
 import LensCard from "../components/lenses/LensListCard.jsx";
@@ -32,6 +32,7 @@ const LensesPage = () => {
     const [pageSize, setPageSize] = useState(10);
 
     const [searchText, setSearchText] = useState("");
+    const [viewMode, setViewMode] = useState("tile");
     const [lenses, setLenses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -183,10 +184,137 @@ const LensesPage = () => {
         setIsModalVisible(false);
     };
 
+    const TileView = () => (
+        <List
+            grid={{gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 4}}
+            dataSource={filteredLenses}
+            renderItem={(lens) => (
+                <List.Item>
+                    <LensCard
+                        lens={lens}
+                        handleDeleteLens={() => handleDeleteLens(lens.id)}
+                        handleEditLens={() => handleEditLens(lens)}
+                    />
+                </List.Item>
+            )}
+            pagination={{
+                current,
+                pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                onChange: (page, newPageSize) => {
+                    setCurrent(page);
+                    setPageSize(newPageSize);
+                },
+            }}
+        />
+    );
+
+
+    const columns = [
+        {
+            title: "Тор",
+            dataIndex: "tor",
+            key: "tor",
+            sorter: (a, b) => a.tor - b.tor,
+        },
+        {
+            title: "Диаметр",
+            dataIndex: "diameter",
+            key: "diameter",
+            sorter: (a, b) => a.diameter - b.diameter,
+        },
+        {
+            title: "Пресетная рефракция",
+            dataIndex: "preset_refraction",
+            key: "preset_refraction",
+            sorter: (a, b) => a.preset_refraction - b.preset_refraction,
+        },
+        {
+            title: "Периферия торичность",
+            dataIndex: "periphery_toricity",
+            key: "periphery_toricity",
+            sorter: (a, b) => a.periphery_toricity - b.periphery_toricity,
+        },
+        {
+            title: "FVC",
+            dataIndex: "fvc",
+            key: "fvc",
+            sorter: (a, b) => a.fvc - b.fvc,
+        },
+        {
+            title: "Trial",
+            dataIndex: "trial",
+            key: "trial",
+            sorter: (a, b) => a.trial - b.trial,
+        },
+        {
+            title: "Сторона",
+            dataIndex: "side",
+            key: "side",
+            filters: [
+                {text: "Левая", value: "левая"},
+                {text: "Правая", value: "правая"},
+            ],
+            onFilter: (value, record) => record.side === value,
+        },
+        {
+            title: "Выдана",
+            dataIndex: "issued",
+            key: "issued",
+            render: (issued) => (issued ? "Да" : "Нет"),
+            filters: [
+                {text: "Да", value: true},
+                {text: "Нет", value: false},
+            ],
+            onFilter: (value, record) => record.issued === value,
+        },
+        {
+            title: "Действия",
+            key: "actions",
+            fixed: 'right',
+            render: (text, record) => (
+                <div style={{display: "flex", gap: "8px"}}>
+                    <Button onClick={() => handleEditLens(record)}>Изменить</Button>
+
+                    <Popconfirm
+                        title="Вы уверены, что хотите удалить линзу?"
+                        onConfirm={() => handleDeleteLens(record.id)}
+                        okText="Да, удалить"
+                        cancelText="Отмена"
+                    >
+                        <Button danger>Удалить</Button>
+                    </Popconfirm>
+                </div>
+            ),
+        },
+    ];
+
+    const TableView = () => (
+        <Table
+            columns={columns}
+            dataSource={filteredLenses}
+            scroll={{
+                x: "max-content"
+            }}
+            pagination={{
+                current,
+                pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                onChange: (page, newPageSize) => {
+                    setCurrent(page);
+                    setPageSize(newPageSize);
+                },
+            }}
+        />
+    );
+
+
     return (
         <div style={{padding: 20}}>
             <Row gutter={[16, 16]} style={{marginBottom: 20}}>
-                <Col xs={24} md={17} sm={14} xl={20}>
+                <Col xs={24} md={14} sm={10} xl={16}>
                     <Input
                         placeholder="Поиск линзы"
                         value={searchText}
@@ -202,6 +330,16 @@ const LensesPage = () => {
                     >
                         Расширенный поиск
                     </Button>
+                </Col>
+                <Col xs={24} md={3} sm={4} xl={2}>
+                    <Select
+                        value={viewMode}
+                        onChange={(value) => setViewMode(value)}
+                        style={{width: "100%"}}
+                    >
+                        <Option value={"tile"}>Плиткой</Option>
+                        <Option value={"table"}>Таблицей</Option>
+                    </Select>
                 </Col>
             </Row>
 
@@ -324,38 +462,13 @@ const LensesPage = () => {
             )}
 
             {loading ? (
-                <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                }}>
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
                     <Spin indicator={<LoadingOutlined style={{fontSize: 64, color: "#1890ff"}} spin/>}/>
                 </div>
+            ) : viewMode === "tile" ? (
+                <TileView/>
             ) : (
-                <List
-                    grid={{gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 4}}
-                    dataSource={filteredLenses}
-                    renderItem={(lens) => (
-                        <List.Item>
-                            <LensCard
-                                lens={lens}
-                                handleDeleteLens={() => handleDeleteLens(lens.id)}
-                                handleEditLens={() => handleEditLens(lens)}
-                            />
-                        </List.Item>
-                    )}
-                    pagination={{
-                        current,
-                        pageSize,
-                        showSizeChanger: true,
-                        pageSizeOptions: ["5", "10", "20", "50"],
-                        onChange: (page, newPageSize) => {
-                            setCurrent(page);
-                            setPageSize(newPageSize);
-                        },
-                    }}
-                />
+                <TableView/>
             )}
 
             <FloatButton

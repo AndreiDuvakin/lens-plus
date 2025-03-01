@@ -1,4 +1,4 @@
-import {Card, Modal, Tooltip} from "antd";
+import {Card, Modal, Popconfirm, Tooltip} from "antd";
 import PropTypes from "prop-types";
 import {DeleteOutlined, EditOutlined, EyeOutlined} from "@ant-design/icons";
 import {useState} from "react";
@@ -9,14 +9,9 @@ const PatientListCard = ({patient, handleEditPatient, handleDeletePatient}) => {
 
     const birthday = new Date(patient.birthday)
 
-    const deletePatientConfirm = () => {
-        Modal.confirm({
-            title: "Удаление пациента",
-            content: `Вы уверены, что хотите удалить пациента ${patient.last_name} ${patient.first_name}?`,
-            okText: "Да, удалить",
-            cancelText: "Отмена",
-            onOk: () => handleDeletePatient(patient.id),
-        });
+
+    const deletePatient = () => {
+        handleDeletePatient(patient.id);
     };
 
     const handleViewPatient = () => {
@@ -38,10 +33,17 @@ const PatientListCard = ({patient, handleEditPatient, handleDeletePatient}) => {
             />
         </Tooltip>,
         <Tooltip title="Удаление пациента" key={"deletePatient"}>
-            <DeleteOutlined
-                onClick={deletePatientConfirm}
-                style={{color: "red"}}
-            />
+            <Popconfirm
+                title="Удаление пациента"
+                description="Вы уверены, что хотите удалить пациента?"
+                onConfirm={deletePatient}
+                okText="Да, удалить"
+                cancelText="Отмена"
+            >
+                <DeleteOutlined
+                    style={{color: "red"}}
+                />
+            </Popconfirm>
         </Tooltip>,
     ];
 
@@ -66,7 +68,7 @@ const PatientListCard = ({patient, handleEditPatient, handleDeletePatient}) => {
                 onCancel={() => setShowModalInfo(false)}
                 patient={patient}
             />
-            </>
+        </>
     );
 };
 

@@ -1,4 +1,4 @@
-import {Card, Modal, Tooltip} from "antd";
+import {Card, Popconfirm, Tooltip} from "antd";
 import PropTypes from "prop-types";
 import {DeleteOutlined, EditOutlined, EyeOutlined} from "@ant-design/icons";
 import {useState} from "react";
@@ -7,15 +7,9 @@ import LensViewModal from "./LensViewModal.jsx";
 const LensListCard = ({lens, handleEditLens, handleDeleteLens}) => {
     const [showModalInfo, setShowModalInfo] = useState(false);
 
-    const deleteLensConfirm = () => {
-        Modal.confirm({
-            title: "Удаление линзы",
-            content: `Вы уверены, что хотите удалить линзу с параметрами ${lens.side} ${lens.diameter}мм?`,
-            okText: "Да, удалить",
-            cancelText: "Отмена",
-            onOk: () => handleDeleteLens(lens.id),
-        });
-    };
+    const deleteLens = () => {
+        handleDeleteLens(lens.id);
+    }
 
     const handleViewLens = () => {
         setShowModalInfo(true);
@@ -29,10 +23,17 @@ const LensListCard = ({lens, handleEditLens, handleDeleteLens}) => {
             <EditOutlined onClick={() => handleEditLens(lens)}/>
         </Tooltip>,
         <Tooltip title="Удаление линзы" key={"deleteLens"}>
-            <DeleteOutlined
-                onClick={deleteLensConfirm}
-                style={{color: "red"}}
-            />
+            <Popconfirm
+                title="Удаление линзы"
+                description="Вы уверены, что хотите удалить линзу?"
+                onConfirm={deleteLens}
+                okText="Да, удалить"
+                cancelText="Отмена"
+            >
+                <DeleteOutlined
+                    style={{color: "red"}}
+                />
+            </Popconfirm>
         </Tooltip>,
     ];
 

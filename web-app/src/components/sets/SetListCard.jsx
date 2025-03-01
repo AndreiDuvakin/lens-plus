@@ -1,34 +1,30 @@
 import PropTypes from "prop-types";
-import {Card, Modal, Tooltip} from "antd";
+import {Card, Modal, Popconfirm, Tooltip} from "antd";
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 
 const SetListCard = ({set, handleEditSet, handleDeleteSet, handleAppendSet}) => {
 
-    const confirmSetDelete = () => {
-        Modal.confirm({
-            title: "Удаление набора",
-            content: `Вы уверены, что хотите удалить набор ${set.title}?`,
-            okText: "Да, удалить",
-            cancelText: "Отмена",
-            onOk: () => handleDeleteSet(set.id),
-        });
+
+    const deleteSet = () => {
+        handleDeleteSet(set.id);
     };
 
-    const confirmAppendSet = () => {
-        Modal.confirm({
-            title: "Добавление набора",
-            content: `Вы уверены, что хотите добавить набор ${set.title} в общий список линз?`,
-            okText: "Да, добавить",
-            cancelText: "Отмена",
-            onOk: () => handleAppendSet(set),
-        });
+
+    const appendSet = () => {
+        handleAppendSet(set);
     };
 
     const actions = [
         <Tooltip title="Добавление набора в общий список линз" key={"add"}>
-            <PlusOutlined
-                onClick={confirmAppendSet}
-            />
+            <Popconfirm
+                title="Добавление набора в общий список линз"
+                description="Вы уверены, что хотите добавить набор в общий список линз?"
+                onConfirm={appendSet}
+                okText="Да, добавить"
+                cancelText="Отмена"
+            >
+                <PlusOutlined/>
+            </Popconfirm>
         </Tooltip>,
 
         <Tooltip title="Редактирование набора" key={"edit"}>
@@ -40,10 +36,17 @@ const SetListCard = ({set, handleEditSet, handleDeleteSet, handleAppendSet}) => 
         </Tooltip>,
 
         <Tooltip title="Удаление набора" key={"delete"}>
-            <DeleteOutlined
-                style={{color: "red"}}
-                onClick={confirmSetDelete}
-            />
+            <Popconfirm
+                title="Удаление набора"
+                description="Вы уверены, что хотите удалить набор?"
+                onConfirm={deleteSet}
+                okText="Да, удалить"
+                cancelText="Отмена"
+            >
+                <DeleteOutlined
+                    style={{color: "red"}}
+                />
+            </Popconfirm>
         </Tooltip>,
     ];
 

@@ -123,11 +123,12 @@ const PatientsPage = () => {
             if (selectedPatient) {
                 await editPatient(newPatient);
             } else {
-                await addPatient(newPatient);
+                await addNewPatient(newPatient);
             }
             setIsModalVisible(false);
             await fetchPatients();
         } catch (error) {
+            console.log(error);
             notification.error({
                 message: "Ошибка",
                 description: error.response?.status === 401
@@ -147,7 +148,7 @@ const PatientsPage = () => {
         });
     };
 
-    const addPatient = async (patient) => {
+    const addNewPatient = async (patient) => {
         await addPatient(user.token, patient);
         notification.success({
             message: "Пациент добавлен",
