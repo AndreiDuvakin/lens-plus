@@ -10,4 +10,3 @@ class Set(BaseModel):
     title = Column(VARCHAR(150), nullable=False, unique=True)
 
     contents = relationship('SetContent', back_populates='set')
-    lens = relationship('SetLens', back_populates='set')

@@ -15,6 +15,5 @@ from app.domain.models.patients import Patient
 from app.domain.models.recipients import Recipient
 from app.domain.models.roles import Role
 from app.domain.models.set_contents import SetContent
-from app.domain.models.set_lens import SetLens
 from app.domain.models.sets import Set
 from app.domain.models.users import User

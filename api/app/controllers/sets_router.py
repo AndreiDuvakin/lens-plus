@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.session import get_db
+from app.domain.entities.lens import LensEntity
 from app.domain.entities.set import SetEntity
 from app.infrastructure.dependencies import get_current_user
 from app.infrastructure.sets_service import SetsService
@@ -52,6 +53,21 @@ async def update_set(
 ):
     sets_service = SetsService(db)
     return await sets_service.update_set(set_id, _set)
+
+
+@router.post(
+    '/sets/append_lenses/{set_id}/',
+    response_model=list[LensEntity],
+    summary='Append content from set to lenses',
+    description='Get all content from set, converting to lens and appending to database',
+)
+async def append_lenses_set(
+        set_id: int,
+        db: AsyncSession = Depends(get_db),
+        user=Depends(get_current_user),
+):
+    sets_service = SetsService(db)
+    return await sets_service.append_set_content_to_lenses(set_id)
 
 
 @router.delete(
