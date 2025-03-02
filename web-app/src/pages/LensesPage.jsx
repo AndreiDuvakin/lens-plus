@@ -209,7 +209,6 @@ const LensesPage = () => {
         />
     );
 
-
     const columns = [
         {
             title: "Тор",
@@ -331,7 +330,7 @@ const LensesPage = () => {
                         Расширенный поиск
                     </Button>
                 </Col>
-                <Col xs={24} md={3} sm={4} xl={2}>
+                <Col xs={24} md={4} sm={4} xl={4}>
                     <Tooltip
                         title={"Отображение линз"}
                     >

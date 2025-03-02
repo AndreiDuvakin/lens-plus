@@ -1,4 +1,4 @@
-import {notification, Spin, Timeline, Input, Modal, Button} from "antd";
+import {notification, Spin, Table, Input, Modal, Row, Col, DatePicker, Tooltip, Button} from "antd";
 import getAllLensIssues from "../api/lens_issues/GetAllLensIssues.jsx";
 import {useEffect, useState} from "react";
 import {useAuth} from "../AuthContext.jsx";
@@ -12,8 +12,11 @@ const IssuesPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedIssue, setSelectedIssue] = useState(null);
 
-    const [current, setCurrent] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+
+    const [startFilterDate, setStartFilterDate] = useState(null);
+    const [endFilterDate, setEndFilterDate] = useState(null);
 
     useEffect(() => {
         fetchLensIssuesWithCache();
@@ -62,50 +65,121 @@ const IssuesPage = () => {
         new Date(issue.issue_date).toLocaleDateString().includes(searchTerm)
     );
 
+    const columns = [
+        {
+            title: "Дата выдачи",
+            dataIndex: "issue_date",
+            key: "issue_date",
+            render: (text) => new Date(text).toLocaleDateString(),
+            sorter: (a, b) => new Date(a.issue_date) - new Date(b.issue_date),
+        },
+        {
+            title: "Пациент",
+            dataIndex: "patient",
+            key: "patient",
+            render: (patient) => `${patient.last_name} ${patient.first_name}`,
+        },
+        {
+            title: "Выдал",
+            dataIndex: "doctor",
+            key: "doctor",
+            render: (doctor) => `${doctor.last_name} ${doctor.first_name}`,
+        },
+        {
+            title: "Линза",
+            dataIndex: "lens",
+            key: "lens",
+            render: (lens) => `Сторона: ${lens.side}, Диаметр: ${lens.diameter}`,
+        },
+        {
+            title: "Действия",
+            key: "actions",
+            render: (_, issue) => (
+                <a onClick={() => setSelectedIssue(issue)}>Подробнее</a>
+            ),
+        },
+    ];
+
     return (
         <div style={{padding: 20}}>
-            <Input.Search
-                placeholder="Поиск по пациенту или дате"
-                onChange={handleSearch}
-                style={{marginBottom: 20, width: 300}}
-            />
+            <Row gutter={[16, 16]} style={{marginBottom: 20}}>
+                <Col xs={24} md={12} sm={24} xl={14}>
+                    <Input
+                        placeholder="Поиск по пациенту или дате"
+                        onChange={handleSearch}
+                        style={{marginBottom: 20, width: "100%"}}
+                        allowClear
+                    />
+                </Col>
 
+                <Col xs={24} md={
+                    startFilterDate && endFilterDate ? 8 : 12
+                } sm={
+                    startFilterDate && endFilterDate ? 16 : 24
+                } xl={
+                    startFilterDate && endFilterDate ? 8 : 10
+                }>
+                    <Tooltip
+                        title="Фильтр по дате выдачи линзы"
+                    >
+                        <DatePicker.RangePicker
+                            style={{width: "100%"}}
+                            placeholder={["Дата начала", "Дата окончания"]}
+                            format="DD.MM.YYYY"
+                            value={[startFilterDate, endFilterDate]}
+                            onChange={(dates) => {
+                                setStartFilterDate(dates[0]);
+                                setEndFilterDate(dates[1]);
+                            }}
+                        />
+                    </Tooltip>
+                </Col>
+                {startFilterDate && endFilterDate && (
+                    <Col xs={24} md={4} sm={8} xl={2}>
+                        <Tooltip
+                            title="Cбросить фильтр"
+                        >
+                            <Button
+                                onClick={() => {
+                                    setStartFilterDate(null);
+                                    setEndFilterDate(null);
+                                }}
+                                style={{marginLeft: 10}}
+                                type={"primary"}
+                                block
+                            >
+                                Сбросить
+                            </Button>
+                        </Tooltip>
+                    </Col>
+                )}
+
+            </Row>
             {loading ? (
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
                     <Spin indicator={<LoadingOutlined style={{fontSize: 64, color: "#1890ff"}} spin/>}/>
                 </div>
             ) : (
-                <Timeline
-                    items={filteredIssues.map((issue) => (
-                        {
-                            key: issue.id,
-                            label: new Date(issue.issue_date).toLocaleDateString(),
-                            children: (
-                                <div>
-                                    <p><b>Дата выдачи:</b> {new Date(issue.issue_date).toLocaleDateString()}</p>
-                                    <p><b>Пациент:</b> {issue.patient.last_name} {issue.patient.first_name}</p>
-                                    <p><b>Врач:</b> {issue.doctor.last_name} {issue.doctor.first_name}</p>
-                                    <p><b>Линза:</b> {issue.lens.side}, Диаметр: {issue.lens.diameter}</p>
-                                    <Button type="link" onClick={() => setSelectedIssue(issue)}>Подробнее</Button>
-                                </div>
-                            ),
-                        }
-                    ))}
+                <Table
+                    columns={columns}
+                    dataSource={filteredIssues}
+                    rowKey="id"
                     pagination={{
-                        current,
-                        pageSize,
+                        current: currentPage,
+                        pageSize: pageSize,
                         showSizeChanger: true,
                         pageSizeOptions: ["5", "10", "20", "50"],
                         onChange: (page, newPageSize) => {
-                            setCurrent(page);
+                            setCurrentPage(page);
                             setPageSize(newPageSize);
                         },
                     }}
+                    showSorterTooltip={false}
                 />
             )}
 
             <Modal
-                visible={!!selectedIssue}
+                open={selectedIssue}
                 title="Детали выдачи линзы"
                 onCancel={() => setSelectedIssue(null)}
                 footer={null}
@@ -114,7 +188,7 @@ const IssuesPage = () => {
                     <div>
                         <p><b>Дата выдачи:</b> {new Date(selectedIssue.issue_date).toLocaleDateString()}</p>
                         <p><b>Пациент:</b> {selectedIssue.patient.last_name} {selectedIssue.patient.first_name}</p>
-                        <p><b>Врач:</b> {selectedIssue.doctor.last_name} {selectedIssue.doctor.first_name}</p>
+                        <p><b>Выдал:</b> {selectedIssue.doctor.last_name} {selectedIssue.doctor.first_name}</p>
                         <p><b>Линза:</b> {selectedIssue.lens.side}, Диаметр: {selectedIssue.lens.diameter}</p>
                     </div>
                 )}
