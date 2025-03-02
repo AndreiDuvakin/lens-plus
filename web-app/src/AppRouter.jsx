@@ -5,6 +5,7 @@ import MainLayout from "./layouts/MainLayout.jsx";
 import PatientsPage from "./pages/PatientsPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import LensesLayout from "./layouts/LensesLayout.jsx";
+import IssuesPage from "./pages/IssuesPage.jsx";
 
 
 const AppRouter = () => (
@@ -15,6 +16,7 @@ const AppRouter = () => (
             <Route element={<MainLayout/>}>
                 <Route path={"/patients"} element={<PatientsPage/>}/>
                 <Route path={"/lenses"} element={<LensesLayout/>}/>
+                <Route path={"/issues"} element={<IssuesPage/>}/>
                 <Route path={"/"} element={<HomePage/>}/>
             </Route>
         </Route>

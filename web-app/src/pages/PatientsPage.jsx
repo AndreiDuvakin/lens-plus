@@ -304,14 +304,18 @@ const PatientsPage = () => {
                     </Tooltip>
                 </Col>
                 <Col xs={24} md={5} sm={8} xl={6}>
-                    <Select
-                        value={viewMode}
-                        onChange={(value) => setViewMode(value)}
-                        style={{width: "100%"}}
+                    <Tooltip
+                        title={"Отображение пациентов"}
                     >
-                        <Option value={"tile"}>Плиткой</Option>
-                        <Option value={"table"}>Таблицей</Option>
-                    </Select>
+                        <Select
+                            value={viewMode}
+                            onChange={(value) => setViewMode(value)}
+                            style={{width: "100%"}}
+                        >
+                            <Option value={"tile"}>Плиткой</Option>
+                            <Option value={"table"}>Таблицей</Option>
+                        </Select>
+                    </Tooltip>
                 </Col>
             </Row>
 

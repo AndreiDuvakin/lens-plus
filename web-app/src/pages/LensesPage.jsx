@@ -10,7 +10,7 @@ import {
     Button,
     Form,
     InputNumber,
-    Card, Grid, notification, Table, Popconfirm
+    Card, Grid, notification, Table, Popconfirm, Tooltip
 } from "antd";
 import {LoadingOutlined, PlusOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
 import LensCard from "../components/lenses/LensListCard.jsx";
@@ -75,8 +75,6 @@ const LensesPage = () => {
     };
 
     const fetchLenses = async () => {
-        if (!user || !user.token) return;
-
         try {
             const data = await getAllLenses(user.token);
             setLenses(data);
@@ -334,14 +332,18 @@ const LensesPage = () => {
                     </Button>
                 </Col>
                 <Col xs={24} md={3} sm={4} xl={2}>
-                    <Select
-                        value={viewMode}
-                        onChange={(value) => setViewMode(value)}
-                        style={{width: "100%"}}
+                    <Tooltip
+                        title={"Отображение линз"}
                     >
-                        <Option value={"tile"}>Плиткой</Option>
-                        <Option value={"table"}>Таблицей</Option>
-                    </Select>
+                        <Select
+                            value={viewMode}
+                            onChange={(value) => setViewMode(value)}
+                            style={{width: "100%"}}
+                        >
+                            <Option value={"tile"}>Плиткой</Option>
+                            <Option value={"table"}>Таблицей</Option>
+                        </Select>
+                    </Tooltip>
                 </Col>
             </Row>
 
