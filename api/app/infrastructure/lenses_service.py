@@ -80,7 +80,6 @@ class LensesService:
 
     @staticmethod
     def entity_to_model(lens: LensEntity) -> Lens:
-
         try:
             side_enum = SideEnum(lens.side)
         except ValueError:
@@ -102,7 +101,7 @@ class LensesService:
         )
 
         if lens.id is not None:
-            lens.id = lens.id
+            lens_model.id = lens.id
 
         return lens_model
 
