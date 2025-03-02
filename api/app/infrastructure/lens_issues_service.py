@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -10,6 +8,9 @@ from app.application.patients_repository import PatientsRepository
 from app.application.users_repository import UsersRepository
 from app.domain.entities.lens_issues import LensIssueEntity
 from app.domain.models import LensIssue
+from app.infrastructure.lenses_service import LensesService
+from app.infrastructure.patients_service import PatientsService
+from app.infrastructure.users_service import UsersService
 
 
 class LensIssuesService:
@@ -76,10 +77,21 @@ class LensIssuesService:
 
     @staticmethod
     def model_to_entity(lens_issue_model: LensIssue) -> LensIssueEntity:
-        return LensIssueEntity(
+        lens_issue_entity = LensIssueEntity(
             id=lens_issue_model.id,
             issue_date=lens_issue_model.issue_date,
             patient_id=lens_issue_model.patient_id,
             doctor_id=lens_issue_model.doctor_id,
             lens_id=lens_issue_model.lens_id,
         )
+
+        if lens_issue_model.doctor is not None:
+            lens_issue_entity.doctor = UsersService.model_to_entity(lens_issue_model.doctor)
+
+        if lens_issue_model.patient is not None:
+            lens_issue_entity.patient = PatientsService.model_to_entity(lens_issue_model.patient)
+
+        if lens_issue_model.lens is not None:
+            lens_issue_entity.lens = LensesService.model_to_entity(lens_issue_model.lens)
+
+        return lens_issue_entity

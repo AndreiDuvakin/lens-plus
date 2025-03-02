@@ -2,6 +2,7 @@ from typing import Optional, Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.domain.models import LensIssue
 
@@ -11,7 +12,13 @@ class LensIssuesRepository:
         self.db = db
 
     async def get_all(self) -> Sequence[LensIssue]:
-        stmt = select(LensIssue)
+        stmt = (
+            select(LensIssue)
+            .options(joinedload(LensIssue.lens))
+            .options(joinedload(LensIssue.patient))
+            .options(joinedload(LensIssue.doctor))
+            .order_by(LensIssue.issue_date)
+        )
         result = await self.db.execute(stmt)
         return result.scalars().all()
 

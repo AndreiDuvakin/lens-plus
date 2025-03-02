@@ -74,3 +74,28 @@ class UsersService:
             return False
 
         return True
+
+    @staticmethod
+    def entity_to_model(user: UserEntity) -> User:
+        user_model = User(
+            first_name=user.first_name,
+            last_name=user.last_name,
+            patronymic=user.patronymic,
+            login=user.login,
+        )
+
+        if user.id is not None:
+            user_model.id = user.id
+
+        return user_model
+
+    @staticmethod
+    def model_to_entity(user: User) -> UserEntity:
+        return UserEntity(
+            id=user.id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            patronymic=user.patronymic,
+            login=user.login,
+            role_id=user.role_id,
+        )
