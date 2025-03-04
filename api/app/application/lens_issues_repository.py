@@ -1,6 +1,6 @@
 from typing import Optional, Sequence
 
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -17,7 +17,7 @@ class LensIssuesRepository:
             .options(joinedload(LensIssue.lens))
             .options(joinedload(LensIssue.patient))
             .options(joinedload(LensIssue.doctor))
-            .order_by(LensIssue.issue_date)
+            .order_by(desc(LensIssue.issue_date))
         )
         result = await self.db.execute(stmt)
         return result.scalars().all()
