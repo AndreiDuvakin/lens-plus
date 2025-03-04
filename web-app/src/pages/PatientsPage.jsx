@@ -27,6 +27,7 @@ const PatientsPage = () => {
 
     useEffect(() => {
         fetchPatientsWithCache();
+        fetchViewModeFromCache();
     }, []);
 
     useEffect(() => {
@@ -70,6 +71,18 @@ const PatientsPage = () => {
         if (loading) {
             setLoading(false);
         }
+    };
+
+    const fetchViewModeFromCache = () => {
+        const cachedViewMode = localStorage.getItem("viewModePatients");
+        if (cachedViewMode) {
+            setViewMode(cachedViewMode);
+        }
+    };
+
+    const handleChangeViewMode = (mode) => {
+        setViewMode(mode);
+        localStorage.setItem("viewModePatients", mode);
     };
 
     const filteredPatients = patients
@@ -305,11 +318,11 @@ const PatientsPage = () => {
                 </Col>
                 <Col xs={24} md={5} sm={8} xl={6}>
                     <Tooltip
-                        title={"Отображение пациентов"}
+                        title={"Формат отображения пациентов"}
                     >
                         <Select
                             value={viewMode}
-                            onChange={(value) => setViewMode(value)}
+                            onChange={handleChangeViewMode}
                             style={{width: "100%"}}
                         >
                             <Option value={"tile"}>Плиткой</Option>

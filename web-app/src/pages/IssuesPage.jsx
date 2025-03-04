@@ -1,8 +1,10 @@
-import {notification, Spin, Table, Input, Modal, Row, Col, DatePicker, Tooltip, Button} from "antd";
+import {notification, Spin, Table, Input, Row, Col, DatePicker, Tooltip, Button, FloatButton} from "antd";
 import getAllLensIssues from "../api/lens_issues/GetAllLensIssues.jsx";
 import {useEffect, useState} from "react";
 import {useAuth} from "../AuthContext.jsx";
-import {LoadingOutlined} from "@ant-design/icons";
+import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
+import LensIssueViewModal from "../components/lens_issues/LensIssueViewModal.jsx";
+import dayjs from "dayjs";
 
 const IssuesPage = () => {
     const {user} = useAuth();
@@ -39,6 +41,15 @@ const IssuesPage = () => {
         }
     };
 
+    const handleAddIssue = () => {
+        setSelectedIssue(null);
+
+    };
+
+    const handleCloseViewModal = () => {
+        setSelectedIssue(null);
+    };
+
     const fetchLensIssues = async () => {
         try {
             const data = await getAllLensIssues(user.token);
@@ -59,10 +70,26 @@ const IssuesPage = () => {
         setSearchTerm(e.target.value.toLowerCase());
     };
 
-    const filteredIssues = lensIssues.filter(issue =>
-        issue.patient.first_name.toLowerCase().includes(searchTerm) ||
-        issue.patient.last_name.toLowerCase().includes(searchTerm) ||
-        new Date(issue.issue_date).toLocaleDateString().includes(searchTerm)
+
+    const filteredIssues = lensIssues.filter(issue => {
+            let dateFilter = true;
+
+            if (startFilterDate && endFilterDate) {
+                const issueDate = dayjs(issue.issue_date);
+
+                dateFilter = issueDate.isAfter(startFilterDate) && issueDate.isBefore(endFilterDate);
+            }
+
+            return (
+                (
+                    issue.patient.last_name.toLowerCase().includes(searchTerm) ||
+                    issue.patient.first_name.toLowerCase().includes(searchTerm) ||
+                    issue.doctor.last_name.toLowerCase().includes(searchTerm) ||
+                    issue.doctor.first_name.toLowerCase().includes(searchTerm)
+                ) &&
+                dateFilter
+            )
+        }
     );
 
     const columns = [
@@ -71,7 +98,7 @@ const IssuesPage = () => {
             dataIndex: "issue_date",
             key: "issue_date",
             render: (text) => new Date(text).toLocaleDateString(),
-            sorter: (a, b) => new Date(a.issue_date) - new Date(b.issue_date),
+            sorter: (a, b) => new Date(b.issue_date) - new Date(a.issue_date),
         },
         {
             title: "Пациент",
@@ -95,7 +122,7 @@ const IssuesPage = () => {
             title: "Действия",
             key: "actions",
             render: (_, issue) => (
-                <a onClick={() => setSelectedIssue(issue)}>Подробнее</a>
+                <Button type={"link"} onClick={() => setSelectedIssue(issue)}>Подробнее</Button>
             ),
         },
     ];
@@ -178,21 +205,19 @@ const IssuesPage = () => {
                 />
             )}
 
-            <Modal
-                open={selectedIssue}
-                title="Детали выдачи линзы"
-                onCancel={() => setSelectedIssue(null)}
-                footer={null}
-            >
-                {selectedIssue && (
-                    <div>
-                        <p><b>Дата выдачи:</b> {new Date(selectedIssue.issue_date).toLocaleDateString()}</p>
-                        <p><b>Пациент:</b> {selectedIssue.patient.last_name} {selectedIssue.patient.first_name}</p>
-                        <p><b>Выдал:</b> {selectedIssue.doctor.last_name} {selectedIssue.doctor.first_name}</p>
-                        <p><b>Линза:</b> {selectedIssue.lens.side}, Диаметр: {selectedIssue.lens.diameter}</p>
-                    </div>
-                )}
-            </Modal>
+            <FloatButton
+                icon={<PlusOutlined/>}
+                type={"primary"}
+                style={{position: "fixed", bottom: 40, right: 40}}
+                onClick={handleAddIssue}
+                tooltip={"Добавить выдачу линзы"}
+            />
+
+            <LensIssueViewModal
+                visible={selectedIssue !== null}
+                onCancel={handleCloseViewModal}
+                lensIssue={selectedIssue}
+            />
         </div>
     );
 };

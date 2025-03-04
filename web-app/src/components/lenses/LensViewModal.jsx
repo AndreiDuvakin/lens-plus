@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 const {Text, Title} = Typography;
 
 const LensViewModal = ({visible, onCancel, lens}) => {
-    if (!lens) return null;
-
     return (
         <Modal
             title="Просмотр линзы"

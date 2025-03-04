@@ -52,6 +52,7 @@ const LensesPage = () => {
 
     useEffect(() => {
         fetchLensWithCache();
+        fetchViewModeFromCache();
     }, []);
 
     useEffect(() => {
@@ -90,6 +91,18 @@ const LensesPage = () => {
         }
     };
 
+    const fetchViewModeFromCache = () => {
+        const cachedViewMode = localStorage.getItem("viewModeLenses");
+        if (cachedViewMode) {
+            setViewMode(cachedViewMode);
+        }
+    };
+
+    const handleChangeViewMode = (mode) => {
+        setViewMode(mode);
+        localStorage.setItem("viewModeLenses", mode);
+    };
+
     const filteredLenses = lenses.filter((lens) => {
         const textMatch = Object.values(lens).some((value) =>
             value?.toString().toLowerCase().includes(searchText.toLowerCase())
@@ -111,7 +124,6 @@ const LensesPage = () => {
     }).sort((a, b) => {
         return a.preset_refraction - b.preset_refraction;
     });
-
 
     const handleAddLens = () => {
         setSelectedLens(null);
@@ -332,11 +344,11 @@ const LensesPage = () => {
                 </Col>
                 <Col xs={24} md={4} sm={4} xl={4}>
                     <Tooltip
-                        title={"Отображение линз"}
+                        title={"Формат отображения линз"}
                     >
                         <Select
                             value={viewMode}
-                            onChange={(value) => setViewMode(value)}
+                            onChange={handleChangeViewMode}
                             style={{width: "100%"}}
                         >
                             <Option value={"tile"}>Плиткой</Option>
