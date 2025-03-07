@@ -1,10 +1,13 @@
-import {notification, Spin, Table, Input, Row, Col, DatePicker, Tooltip, Button, FloatButton} from "antd";
+import {notification, Spin, Table, Input, Row, Col, DatePicker, Tooltip, Button, FloatButton, Typography} from "antd";
 import getAllLensIssues from "../api/lens_issues/GetAllLensIssues.jsx";
 import {useEffect, useState} from "react";
 import {useAuth} from "../AuthContext.jsx";
-import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
+import {DatabaseOutlined, LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import LensIssueViewModal from "../components/lens_issues/LensIssueViewModal.jsx";
 import dayjs from "dayjs";
+import LensIssueFormModal from "../components/lens_issues/LensIssueFormModal.jsx";
+
+const {Title} = Typography;
 
 const IssuesPage = () => {
     const {user} = useAuth();
@@ -13,6 +16,7 @@ const IssuesPage = () => {
     const [lensIssues, setLensIssues] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedIssue, setSelectedIssue] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -22,6 +26,7 @@ const IssuesPage = () => {
 
     useEffect(() => {
         fetchLensIssuesWithCache();
+        document.title = "Выдача линз";
     }, []);
 
     useEffect(() => {
@@ -43,11 +48,19 @@ const IssuesPage = () => {
 
     const handleAddIssue = () => {
         setSelectedIssue(null);
-
+        setIsModalVisible(true);
     };
 
     const handleCloseViewModal = () => {
         setSelectedIssue(null);
+    };
+
+    const handleCloseFormModal = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleSubmitFormModal = () => {
+
     };
 
     const fetchLensIssues = async () => {
@@ -129,6 +142,7 @@ const IssuesPage = () => {
 
     return (
         <div style={{padding: 20}}>
+            <Title level={1}><DatabaseOutlined/> Выдача линз</Title>
             <Row gutter={[16, 16]} style={{marginBottom: 20}}>
                 <Col xs={24} md={12} sm={24} xl={14}>
                     <Input
@@ -211,6 +225,12 @@ const IssuesPage = () => {
                 style={{position: "fixed", bottom: 40, right: 40}}
                 onClick={handleAddIssue}
                 tooltip={"Добавить выдачу линзы"}
+            />
+
+            <LensIssueFormModal
+                visible={isModalVisible}
+                onCancel={handleCloseFormModal}
+                onSubmit={handleSubmitFormModal}
             />
 
             <LensIssueViewModal

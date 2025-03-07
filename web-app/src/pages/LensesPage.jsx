@@ -10,9 +10,16 @@ import {
     Button,
     Form,
     InputNumber,
-    Card, Grid, notification, Table, Popconfirm, Tooltip
+    Card, Grid, notification, Table, Popconfirm, Tooltip, Typography
 } from "antd";
-import {LoadingOutlined, PlusOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
+import {
+    LoadingOutlined,
+    PlusOutlined,
+    DownOutlined,
+    UpOutlined,
+    FolderViewOutlined,
+    BorderlessTableOutlined, TableOutlined
+} from "@ant-design/icons";
 import LensCard from "../components/lenses/LensListCard.jsx";
 import getAllLenses from "../api/lenses/GetAllLenses.jsx";
 import addLens from "../api/lenses/AddLens.jsx";
@@ -20,9 +27,11 @@ import updateLens from "../api/lenses/UpdateLens.jsx";
 import deleteLens from "../api/lenses/DeleteLens.jsx";
 import {useAuth} from "../AuthContext.jsx";
 import LensFormModal from "../components/lenses/LensFormModal.jsx";
+import SelectViewMode from "../components/SelectViewMode.jsx";
 
 const {Option} = Select;
 const {useBreakpoint} = Grid;
+const {Title} = Typography;
 
 const LensesPage = () => {
     const {user} = useAuth();
@@ -53,6 +62,7 @@ const LensesPage = () => {
     useEffect(() => {
         fetchLensWithCache();
         fetchViewModeFromCache();
+        document.title = "Линзы";
     }, []);
 
     useEffect(() => {
@@ -96,11 +106,6 @@ const LensesPage = () => {
         if (cachedViewMode) {
             setViewMode(cachedViewMode);
         }
-    };
-
-    const handleChangeViewMode = (mode) => {
-        setViewMode(mode);
-        localStorage.setItem("viewModeLenses", mode);
     };
 
     const filteredLenses = lenses.filter((lens) => {
@@ -324,6 +329,7 @@ const LensesPage = () => {
 
     return (
         <div style={{padding: 20}}>
+            <Title level={1}><FolderViewOutlined/> Линзы</Title>
             <Row gutter={[16, 16]} style={{marginBottom: 20}}>
                 <Col xs={24} md={14} sm={10} xl={16}>
                     <Input
@@ -343,18 +349,12 @@ const LensesPage = () => {
                     </Button>
                 </Col>
                 <Col xs={24} md={4} sm={4} xl={4}>
-                    <Tooltip
-                        title={"Формат отображения линз"}
-                    >
-                        <Select
-                            value={viewMode}
-                            onChange={handleChangeViewMode}
-                            style={{width: "100%"}}
-                        >
-                            <Option value={"tile"}>Плиткой</Option>
-                            <Option value={"table"}>Таблицей</Option>
-                        </Select>
-                    </Tooltip>
+                    <SelectViewMode
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
+                        localStorageKey={"viewModeLenses"}
+                        toolTipText={"Формат отображения линз"}
+                    />
                 </Col>
             </Row>
 

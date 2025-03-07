@@ -16,6 +16,7 @@ const LoginPage = () => {
         if (user) {
             navigate("/");
         }
+        document.title = "Авторизация";
     }, [user, navigate]);
 
     const onFinish = async (values) => {

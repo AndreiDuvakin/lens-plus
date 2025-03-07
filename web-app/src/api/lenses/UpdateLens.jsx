@@ -3,7 +3,6 @@ import CONFIG from "../../core/Config.jsx";
 
 
 const updateLens = async (token, lensId, lensData) => {
-    console.log(lensId, lensData);
     try {
         const response = await axios.put(`${CONFIG.BASE_URL}/lenses/${lensId}/`, lensData, {
             headers: {

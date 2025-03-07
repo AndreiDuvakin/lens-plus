@@ -1,8 +1,8 @@
 import {useAuth} from "../AuthContext.jsx";
 import {useEffect, useState} from "react";
-import {FloatButton, Input, List, notification, Row, Spin} from "antd";
+import {FloatButton, Input, List, notification, Row, Spin, Typography} from "antd";
 import getAllSets from "../api/sets/GetAllSets.jsx";
-import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
+import {LoadingOutlined, PlusOutlined, SwitcherOutlined} from "@ant-design/icons";
 import SetListCard from "../components/sets/SetListCard.jsx";
 import SetFormModal from "../components/sets/SetFormModal.jsx";
 import updateSet from "../api/sets/UpdateSet.jsx";
@@ -12,6 +12,8 @@ import addSetContent from "../api/set_content/AddSetContent.jsx";
 import updateSetContent from "../api/set_content/UpdateSetContent.jsx";
 import appendLensesFromSet from "../api/sets/AppendLensesFromSet.jsx";
 
+
+const {Title} = Typography;
 
 const SetLensesPage = () => {
     const {user} = useAuth();
@@ -201,6 +203,7 @@ const SetLensesPage = () => {
 
     return (
         <div style={{padding: 20}}>
+            <Title level={1}><SwitcherOutlined/> Наборы линз</Title>
             <Row style={{marginBottom: 20}}>
                 <Input
                     placeholder="Поиск набора"

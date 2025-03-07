@@ -1,6 +1,26 @@
 import {useEffect, useState} from "react";
-import {Input, Select, List, FloatButton, Row, Col, Spin, notification, Tooltip, Table, Button, Popconfirm} from "antd";
-import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
+import {
+    Input,
+    Select,
+    List,
+    FloatButton,
+    Row,
+    Col,
+    Spin,
+    notification,
+    Tooltip,
+    Table,
+    Button,
+    Popconfirm,
+    Typography
+} from "antd";
+import {
+    LoadingOutlined,
+    PlusOutlined,
+    SortAscendingOutlined,
+    SortDescendingOutlined,
+    TeamOutlined
+} from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
 import getAllPatients from "../api/patients/GetAllPatients.jsx";
 import PatientListCard from "../components/patients/PatientListCard.jsx";
@@ -8,8 +28,10 @@ import PatientFormModal from "../components/patients/PatientFormModal.jsx";
 import updatePatient from "../api/patients/UpdatePatient.jsx";
 import addPatient from "../api/patients/AddPatient.jsx";
 import deletePatient from "../api/patients/DeletePatient.jsx";
+import SelectViewMode from "../components/SelectViewMode.jsx";
 
 const {Option} = Select;
+const {Title} = Typography
 
 const PatientsPage = () => {
     const {user} = useAuth();
@@ -28,6 +50,7 @@ const PatientsPage = () => {
     useEffect(() => {
         fetchPatientsWithCache();
         fetchViewModeFromCache();
+        document.title = "Пациенты";
     }, []);
 
     useEffect(() => {
@@ -78,11 +101,6 @@ const PatientsPage = () => {
         if (cachedViewMode) {
             setViewMode(cachedViewMode);
         }
-    };
-
-    const handleChangeViewMode = (mode) => {
-        setViewMode(mode);
-        localStorage.setItem("viewModePatients", mode);
     };
 
     const filteredPatients = patients
@@ -293,8 +311,9 @@ const PatientsPage = () => {
 
     return (
         <div style={{padding: 20}}>
+            <Title level={1}><TeamOutlined/> Пациенты</Title>
             <Row gutter={[16, 16]} style={{marginBottom: 20}}>
-                <Col xs={24} md={14} sm={10} xl={16}>
+                <Col xs={24} md={14} sm={10} xl={18} xxl={19}>
                     <Input
                         placeholder="Поиск пациента"
                         onChange={(e) => setSearchText(e.target.value)}
@@ -302,37 +321,42 @@ const PatientsPage = () => {
                         allowClear
                     />
                 </Col>
-                <Col xs={24} md={5} sm={6} xl={2}>
-                    <Tooltip
-                        title={"Сортировка пациентов"}
-                    >
-                        <Select
-                            value={sortOrder}
-                            onChange={(value) => setSortOrder(value)}
-                            style={{width: "100%"}}
+                {viewMode === "tile" && (
+                    <Col xs={24} md={5} sm={6} xl={3} xxl={2}>
+                        <Tooltip
+                            title={"Сортировка пациентов"}
                         >
-                            <Option value="asc">А-Я</Option>
-                            <Option value="desc">Я-А</Option>
-                        </Select>
-                    </Tooltip>
-                </Col>
-                <Col xs={24} md={5} sm={8} xl={6}>
-                    <Tooltip
-                        title={"Формат отображения пациентов"}
-                    >
-                        <Select
-                            value={viewMode}
-                            onChange={handleChangeViewMode}
-                            style={{width: "100%"}}
-                        >
-                            <Option value={"tile"}>Плиткой</Option>
-                            <Option value={"table"}>Таблицей</Option>
-                        </Select>
-                    </Tooltip>
+                            <Select
+                                value={sortOrder}
+                                onChange={(value) => setSortOrder(value)}
+                                style={{width: "100%"}}
+                            >
+                                <Option value="asc"><SortAscendingOutlined/> А-Я</Option>
+                                <Option value="desc"><SortDescendingOutlined/> Я-А</Option>
+                            </Select>
+                        </Tooltip>
+                    </Col>
+                )}
+
+                <Col xs={24} md={
+                    viewMode === "tile" ? 5 : 10
+                } sm={
+                    viewMode === "tile" ? 8 : 14
+                } xl={
+                    viewMode === "tile" ? 3 : 5
+                } xxl={
+                    viewMode === "tile" ? 3 : 4
+                }>
+                    <SelectViewMode
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
+                        localStorageKey={"viewModePatients"}
+                        toolTipText={"Формат отображения пациентов"}
+                    />
                 </Col>
             </Row>
 
-            {loading ? (
+                    {loading ? (
                 <div style={{
                     display: "flex",
                     justifyContent: "center",
