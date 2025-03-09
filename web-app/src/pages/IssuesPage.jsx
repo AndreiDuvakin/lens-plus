@@ -30,8 +30,10 @@ const IssuesPage = () => {
     }, []);
 
     useEffect(() => {
-        const interval = setInterval(fetchLensIssues, 5000);
-        return () => clearInterval(interval);
+        if (!isModalVisible) {
+            const interval = setInterval(fetchLensIssues, 5000);
+            return () => clearInterval(interval);
+        }
     }, [user]);
 
     const fetchLensIssuesWithCache = async () => {
