@@ -1,11 +1,10 @@
 import {useEffect, useState} from "react";
-import {Modal, Form, Input, Select, Button, notification, Typography, Collapse, Steps} from "antd";
+import {Modal, Input, Button, notification, Typography, Collapse, Steps, Row, Alert, Col} from "antd";
 import PropTypes from "prop-types";
 import getAllPatients from "../../api/patients/GetAllPatients.jsx";
 import getAllLenses from "../../api/lenses/GetAllLenses.jsx";
 import {useAuth} from "../../AuthContext.jsx";
 
-const {Option} = Select;
 
 const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
     const {user} = useAuth();
@@ -14,6 +13,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
 
     const [searchPatientString, setSearchPatientString] = useState("");
     const [searchLensString, setSearchLensString] = useState("");
+    const [issueDate, setIssueDate] = useState(null);
 
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedLens, setSelectedLens] = useState(null);
@@ -196,15 +196,70 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
 
     const ConfirmStep = () => {
         return (
-            <div style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}>
-                <Typography.Text strong>
-                    {selectedPatient.last_name} {selectedPatient.first_name}
-                </Typography.Text>
-                <p><b>Дата рождения:</b> {new Date(selectedPatient.birthday).toLocaleDateString("ru-RU")}</p>
-                <p><b>Email:</b> {selectedPatient.email}</p>
-                <p><b>Телефон:</b> {selectedPatient.phone}</p>
-                <p><b>Линза:</b> {selectedLens.diameter} {selectedLens.tor} {selectedLens.preset_refraction}</p>
-            </div>
+            <>
+                <Alert
+                    type={"warning"}
+                    message={
+                        "Внимание! После подтверждения линза будет считаться выданной, данное действие нельзя будет отменить."
+                    }
+                    style={{marginBottom: 15}}
+                />
+
+                <Row
+                    style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}
+                    gutter={[16, 16]}
+                >
+                    <Col
+                        xs={24}
+                        md={16}
+                        style={{display: "flex", alignItems: "center"}}
+                    >
+                        <Typography.Text
+                            strong
+                        >
+                            Дата выдачи будет установлена автоматически: {issueDate.toLocaleDateString("ru-RU")}
+                        </Typography.Text>
+                    </Col>
+
+                    <Col
+                        xs={24}
+                        md={8}
+                    >
+                        <Button
+                            type="primary"
+                            onClick={}
+                            block
+                        >
+                            Установить дату вручную
+                        </Button>
+                    </Col>
+                </Row>
+
+                <div style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}>
+                    <Typography.Text strong>
+                        {selectedPatient.last_name} {selectedPatient.first_name}
+                    </Typography.Text>
+                    <p><b>Дата рождения:</b> {new Date(selectedPatient.birthday).toLocaleDateString("ru-RU")}</p>
+                    <p><b>Email:</b> {selectedPatient.email}</p>
+                    <p><b>Телефон:</b> {selectedPatient.phone}</p>
+                    <p><b>Линза:</b> {selectedLens.diameter} {selectedLens.tor} {selectedLens.preset_refraction}</p>
+                </div>
+
+                <div style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}>
+                    <Typography.Text strong>
+                        {selectedLens.diameter} {selectedLens.tor} {selectedLens.preset_refraction}
+                    </Typography.Text>
+                    <p><b>Диаметр:</b> {selectedLens.diameter}</p>
+                    <p><b>Тор:</b> {selectedLens.tor}</p>
+                    <p><b>Пресетная рефракция:</b> {selectedLens.preset_refraction}</p>
+                    <p><b>Диаметр:</b> {selectedLens.diameter}</p>
+                    <p><b>FVC:</b> {selectedLens.fvc}</p>
+                    <p><b>Острота зрения (Trial):</b> {selectedLens.trial}</p>
+                    <p><b>Периферийная торичность:</b> {selectedLens.periphery_toricity}</p>
+                    <p><b>Сторона:</b> {selectedLens.side}</p>
+                    <p><b>Esa:</b> {selectedLens.esa}</p>
+                </div>
+            </>
         )
     };
 
@@ -221,7 +276,23 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
             title: 'Подтверждение',
             content: <ConfirmStep/>,
         },
-    ]
+    ];
+
+    const isActiveNextButton = () => {
+        if (currentStep === 0 && !selectedPatient) {
+            return false;
+        }
+
+        return !(currentStep === 1 && !selectedLens);
+    };
+
+    const isActivePrevButton = () => {
+        return currentStep > 0;
+    };
+
+    const isActiveFinishButton = () => {
+        return currentStep === steps.length - 1;
+    };
 
     return (
         <Modal
@@ -230,23 +301,48 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
             onCancel={() => {
                 setSelectedPatient(null);
                 setSelectedLens(null);
+                setCurrentStep(0);
                 onCancel();
             }}
-            onOk={handleOk}
-            okText="Сохранить"
-            cancelText="Отмена"
+            footer={null}
             maskClosable={false}
+            width={window.innerWidth > 768 ? 700 : "90%"}
             centered
         >
 
-            {steps[currentStep].content}
-            <Steps
-                current={currentStep}
-                items={steps}
-                style={{marginTop: 16}}
-                direction={"horizontal"}
-            />
+            <div style={{maxHeight: "60vh", overflowY: "auto", padding: "10px"}}>
+                {steps[currentStep].content}
+            </div>
 
+            {window.innerWidth > 768 && (
+                <Steps
+                    current={currentStep}
+                    items={steps}
+                    style={{marginTop: 16}}
+                    direction={window.innerWidth > 768 ? "horizontal" : "vertical"}
+                />
+            )}
+
+            <Row
+                justify="end"
+                style={{marginTop: 20}}
+                gutter={[8, 8]}
+            >
+                <Button
+                    type="primary"
+                    onClick={() => setCurrentStep(currentStep + 1)}
+                    disabled={!isActiveNextButton() && !isActiveFinishButton()}
+                >
+                    {isActiveFinishButton() ? "Завершить" : "Далее"}
+                </Button>
+                <Button
+                    style={{marginLeft: 8}}
+                    onClick={() => setCurrentStep(currentStep - 1)}
+                    disabled={!isActivePrevButton()}
+                >
+                    Назад
+                </Button>
+            </Row>
 
         </Modal>
     );

@@ -31,10 +31,10 @@ const IssuesPage = () => {
 
     useEffect(() => {
         if (!isModalVisible) {
-            const interval = setInterval(fetchLensIssues, 5000);
-            return () => clearInterval(interval);
+            const intervalId = setInterval(fetchLensIssues, 5000);
+            return () => clearInterval(intervalId);
         }
-    }, [user]);
+    }, [user, isModalVisible]);
 
     const fetchLensIssuesWithCache = async () => {
         const cachedData = localStorage.getItem("lensIssuesData");
