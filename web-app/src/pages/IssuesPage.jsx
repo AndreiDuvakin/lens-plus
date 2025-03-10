@@ -10,7 +10,7 @@ import {
     Button,
     FloatButton,
     Typography,
-    Timeline, Grid
+    Timeline, Grid, Pagination
 } from "antd";
 import getAllLensIssues from "../api/lens_issues/GetAllLensIssues.jsx";
 import {useEffect, useState} from "react";
@@ -38,6 +38,9 @@ const IssuesPage = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+
+    const [timelinePage, setTimelinePage] = useState(1);
+    const [timeLinePageSize, setTimeLinePageSize] = useState(10);
 
     const [startFilterDate, setStartFilterDate] = useState(null);
     const [endFilterDate, setEndFilterDate] = useState(null);
@@ -241,12 +244,38 @@ const IssuesPage = () => {
         ),
     }));
 
-    const TimeLineView = () => (
-        <Timeline
-            items={timeLineItems}
-            mode={screens.xs ? "left" : "right"}
-        />
-    );
+    const TimeLineView = () => {
+        const paginatedItems = timeLineItems.slice(
+            (timelinePage - 1) * timeLinePageSize,
+            timelinePage * timeLinePageSize
+        );
+
+        return (
+            <>
+                <Timeline
+                    items={paginatedItems}
+                    mode={screens.xs ? "left" : "right"}
+                />
+                <Row
+                    style={{textAlign: "center", marginTop: 20}}
+                    align={"middle"}
+                    justify={"end"}
+                >
+                    <Pagination
+                        current={timelinePage}
+                        pageSize={timeLinePageSize}
+                        total={timeLineItems.length}
+                        onChange={(page, newPageSize) => {
+                            setTimelinePage(page);
+                            setTimeLinePageSize(newPageSize);
+                        }}
+                        showSizeChanger={true}
+                        pageSizeOptions={["5", "10", "20", "50"]}
+                    />
+                </Row>
+            </>
+        );
+    };
 
     return (
         <div style={{padding: 20}}>
