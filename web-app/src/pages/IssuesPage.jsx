@@ -6,6 +6,7 @@ import {DatabaseOutlined, LoadingOutlined, PlusOutlined} from "@ant-design/icons
 import LensIssueViewModal from "../components/lens_issues/LensIssueViewModal.jsx";
 import dayjs from "dayjs";
 import LensIssueFormModal from "../components/lens_issues/LensIssueFormModal.jsx";
+import addLensIssue from "../api/lens_issues/AddLensIssue.jsx";
 
 const {Title} = Typography;
 
@@ -61,8 +62,24 @@ const IssuesPage = () => {
         setIsModalVisible(false);
     };
 
-    const handleSubmitFormModal = () => {
-
+    const handleSubmitFormModal = async (issue_date, patient_id, lens_id) => {
+        try {
+            await addLensIssue(user.token, {issue_date, patient_id, lens_id});
+            setIsModalVisible(false);
+            notification.success({
+                message: "Линза выдана",
+                description: "Линза успешно выдана пациенту.",
+                placement: "topRight",
+            });
+            await fetchLensIssues();
+        } catch (error) {
+            console.log(error);
+            notification.error({
+                message: "Ошибка добавления",
+                description: "Не удалось выдать линзу пациенту.",
+                placement: "topRight",
+            });
+        }
     };
 
     const fetchLensIssues = async () => {
@@ -84,7 +101,6 @@ const IssuesPage = () => {
     const handleSearch = (e) => {
         setSearchTerm(e.target.value.toLowerCase());
     };
-
 
     const filteredIssues = lensIssues.filter(issue => {
             let dateFilter = true;

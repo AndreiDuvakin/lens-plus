@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
-import {Modal, Input, Button, notification, Typography, Collapse, Steps, Row, Alert, Col} from "antd";
+import {Modal, Input, Button, notification, Typography, Collapse, Steps, Row, Alert, Col, DatePicker, Spin} from "antd";
 import PropTypes from "prop-types";
 import getAllPatients from "../../api/patients/GetAllPatients.jsx";
-import getAllLenses from "../../api/lenses/GetAllLenses.jsx";
 import {useAuth} from "../../AuthContext.jsx";
+import dayjs from "dayjs";
+import getNotIssuedLenses from "../../api/lenses/GetNotIssuedLenses.jsx";
 
 
 const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
@@ -13,10 +14,12 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
 
     const [searchPatientString, setSearchPatientString] = useState("");
     const [searchLensString, setSearchLensString] = useState("");
-    const [issueDate, setIssueDate] = useState(null);
+    const [issueDate, setIssueDate] = useState(dayjs(new Date()));
 
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedLens, setSelectedLens] = useState(null);
+
+    const [loading, setLoading] = useState(false);
 
     const [currentStep, setCurrentStep] = useState(0);
 
@@ -32,7 +35,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
             const data = await getAllPatients(user.token);
             setPatients(data);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             notification.error({
                 message: "Ошибка загрузки пациентов",
                 description: "Проверьте подключение к сети.",
@@ -42,10 +45,10 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
 
     const fetchLenses = async () => {
         try {
-            const data = await getAllLenses(user.token);
+            const data = await getNotIssuedLenses(user.token);
             setLenses(data);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             notification.error({
                 message: "Ошибка загрузки линз",
                 description: "Проверьте подключение к сети.",
@@ -55,11 +58,15 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
 
     const handleOk = async () => {
         try {
-            // const values = await form.validateFields();
-            onSubmit({...values, patient: selectedPatient});
+            setLoading(true);
+            setCurrentStep(0);
+            onSubmit(issueDate.format("YYYY-MM-DD"), selectedPatient.id, selectedLens.id);
             setSelectedPatient(null);
+            setSelectedLens(null);
+            setIssueDate(dayjs(new Date()));
+            setLoading(false);
         } catch (errorInfo) {
-            console.log("Validation Failed:", errorInfo);
+            console.error("Validation Failed:", errorInfo);
         }
     };
 
@@ -198,40 +205,25 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
         return (
             <>
                 <Alert
-                    type={"warning"}
-                    message={
-                        "Внимание! После подтверждения линза будет считаться выданной, данное действие нельзя будет отменить."
-                    }
+                    type="warning"
+                    message="Внимание! После подтверждения линза будет считаться выданной, данное действие нельзя будет отменить."
                     style={{marginBottom: 15}}
                 />
 
-                <Row
-                    style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}
-                    gutter={[16, 16]}
-                >
-                    <Col
-                        xs={24}
-                        md={16}
-                        style={{display: "flex", alignItems: "center"}}
-                    >
-                        <Typography.Text
-                            strong
-                        >
-                            Дата выдачи будет установлена автоматически: {issueDate.toLocaleDateString("ru-RU")}
+                <Row style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}
+                     gutter={[16, 16]}>
+                    <Col xs={24} md={16} style={{display: "flex", alignItems: "center"}}>
+                        <Typography.Text strong>
+                            Дата выдачи: {issueDate?.toDate().toLocaleDateString("ru-RU")}
                         </Typography.Text>
                     </Col>
-
-                    <Col
-                        xs={24}
-                        md={8}
-                    >
-                        <Button
-                            type="primary"
-                            onClick={}
-                            block
-                        >
-                            Установить дату вручную
-                        </Button>
+                    <Col xs={24} md={8}>
+                        <DatePicker
+                            value={issueDate}
+                            onChange={(date) => setIssueDate(date)}
+                            format="DD.MM.YYYY"
+                            style={{width: "100%"}}
+                        />
                     </Col>
                 </Row>
 
@@ -260,7 +252,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                     <p><b>Esa:</b> {selectedLens.esa}</p>
                 </div>
             </>
-        )
+        );
     };
 
     const steps = [
@@ -302,6 +294,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                 setSelectedPatient(null);
                 setSelectedLens(null);
                 setCurrentStep(0);
+                setIssueDate(dayjs(new Date()));
                 onCancel();
             }}
             footer={null}
@@ -309,10 +302,16 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
             width={window.innerWidth > 768 ? 700 : "90%"}
             centered
         >
+            {loading ? (
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "70vh"}}>
+                    <Spin size="large"/>
+                </div>
+            ) : (
+                <div style={{maxHeight: "70vh", overflowY: "auto", padding: "10px"}}>
+                    {steps[currentStep].content}
+                </div>
+            )}
 
-            <div style={{maxHeight: "60vh", overflowY: "auto", padding: "10px"}}>
-                {steps[currentStep].content}
-            </div>
 
             {window.innerWidth > 768 && (
                 <Steps
@@ -329,21 +328,26 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                 gutter={[8, 8]}
             >
                 <Button
-                    type="primary"
-                    onClick={() => setCurrentStep(currentStep + 1)}
-                    disabled={!isActiveNextButton() && !isActiveFinishButton()}
-                >
-                    {isActiveFinishButton() ? "Завершить" : "Далее"}
-                </Button>
-                <Button
-                    style={{marginLeft: 8}}
+                    style={{marginRight: 8}}
                     onClick={() => setCurrentStep(currentStep - 1)}
                     disabled={!isActivePrevButton()}
                 >
                     Назад
                 </Button>
+                <Button
+                    type="primary"
+                    onClick={async () => {
+                        if (isActiveFinishButton()) {
+                            await handleOk();
+                        } else {
+                            setCurrentStep(currentStep + 1);
+                        }
+                    }}
+                    disabled={!isActiveNextButton() && !isActiveFinishButton()}
+                >
+                    {isActiveFinishButton() ? "Завершить" : "Далее"}
+                </Button>
             </Row>
-
         </Modal>
     );
 };
