@@ -23,6 +23,20 @@ async def get_all_lenses(
     return await lenses_service.get_all_lenses()
 
 
+@router.get(
+    "/lenses/not_issued/",
+    response_model=list[LensEntity],
+    summary="Get all not issued lenses",
+    description="Returns a list of all not issued lenses",
+)
+async def get_all_not_issued_lenses(
+        db: AsyncSession = Depends(get_db),
+        user=Depends(get_current_user),
+):
+    lenses_service = LensesService(db)
+    return await lenses_service.get_all_not_issued_lenses()
+
+
 @router.post(
     "/lenses/",
     response_model=LensEntity,

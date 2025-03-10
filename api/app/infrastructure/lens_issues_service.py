@@ -55,9 +55,19 @@ class LensIssuesService:
                 detail='The lens with this ID was not found',
             )
 
+        if lens.issued:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='The lens is already issued',
+            )
+
         lens_issue_model = self.entity_to_model(lens_issue)
 
         await self.lens_issues_repository.create(lens_issue_model)
+
+        lens.issued = True
+
+        await self.lenses_repository.update(lens)
 
         return self.model_to_entity(lens_issue_model)
 

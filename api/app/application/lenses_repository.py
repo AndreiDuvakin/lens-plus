@@ -15,6 +15,11 @@ class LensesRepository:
         result = await self.db.execute(stmt)
         return result.scalars().all()
 
+    async def get_all_not_issued(self) -> Sequence[Lens]:
+        stmt = select(Lens).filter(Lens.issued == False)
+        result = await self.db.execute(stmt)
+        return result.scalars().all()
+
     async def get_by_id(self, lens_id: int) -> Optional[Lens]:
         stmt = select(Lens).filter(Lens.id == lens_id)
         result = await self.db.execute(stmt)

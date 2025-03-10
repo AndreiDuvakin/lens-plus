@@ -24,6 +24,14 @@ class LensesService:
             for lens in lenses
         ]
 
+    async def get_all_not_issued_lenses(self) -> list[LensEntity]:
+        lenses = await self.lenses_repository.get_all_not_issued()
+
+        return [
+            self.model_to_entity(lens)
+            for lens in lenses
+        ]
+
     async def create_lens(self, lens: LensEntity) -> LensEntity:
         lens_type = await self.lens_types_repository.get_by_id(lens.type_id)
 
