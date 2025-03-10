@@ -10,7 +10,12 @@ import {
     Button,
     Form,
     InputNumber,
-    Card, Grid, notification, Table, Popconfirm, Tooltip, Typography
+    Card,
+    Grid,
+    notification,
+    Table,
+    Popconfirm,
+    Typography
 } from "antd";
 import {
     LoadingOutlined,
@@ -18,7 +23,8 @@ import {
     DownOutlined,
     UpOutlined,
     FolderViewOutlined,
-    BorderlessTableOutlined, TableOutlined
+    TableOutlined,
+    BuildOutlined
 } from "@ant-design/icons";
 import LensCard from "../components/lenses/LensListCard.jsx";
 import getAllLenses from "../api/lenses/GetAllLenses.jsx";
@@ -100,6 +106,7 @@ const LensesPage = () => {
             setLoading(false);
         }
     };
+
 
     const fetchViewModeFromCache = () => {
         const cachedViewMode = localStorage.getItem("viewModeLenses");
@@ -225,6 +232,19 @@ const LensesPage = () => {
             }}
         />
     );
+
+    const viewModes = [
+        {
+            value: "tile",
+            label: "Плитка",
+            icon: <BuildOutlined style={{marginRight: 8}}/>
+        },
+        {
+            value: "table",
+            label: "Таблица",
+            icon: <TableOutlined style={{marginRight: 8}}/>
+        }
+    ];
 
     const columns = [
         {
@@ -354,6 +374,7 @@ const LensesPage = () => {
                         setViewMode={setViewMode}
                         localStorageKey={"viewModeLenses"}
                         toolTipText={"Формат отображения линз"}
+                        viewModes={viewModes}
                     />
                 </Col>
             </Row>

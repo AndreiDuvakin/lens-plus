@@ -1,14 +1,19 @@
 import {useEffect, useState} from "react";
-import {Modal, Input, Button, notification, Typography, Collapse, Steps, Row, Alert, Col, DatePicker, Spin} from "antd";
+import {
+    Modal, Input, Button, notification, Typography, Collapse, Steps, Row, Alert, Col, DatePicker, Spin, Grid
+} from "antd";
 import PropTypes from "prop-types";
 import getAllPatients from "../../api/patients/GetAllPatients.jsx";
 import {useAuth} from "../../AuthContext.jsx";
 import dayjs from "dayjs";
 import getNotIssuedLenses from "../../api/lenses/GetNotIssuedLenses.jsx";
 
+const {useBreakpoint} = Grid;
 
 const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
     const {user} = useAuth();
+    const screens = useBreakpoint();
+
     const [patients, setPatients] = useState([]);
     const [lenses, setLenses] = useState([]);
 
@@ -37,8 +42,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
         } catch (error) {
             console.error(error);
             notification.error({
-                message: "Ошибка загрузки пациентов",
-                description: "Проверьте подключение к сети.",
+                message: "Ошибка загрузки пациентов", description: "Проверьте подключение к сети.",
             });
         }
     };
@@ -50,8 +54,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
         } catch (error) {
             console.error(error);
             notification.error({
-                message: "Ошибка загрузки линз",
-                description: "Проверьте подключение к сети.",
+                message: "Ошибка загрузки линз", description: "Проверьте подключение к сети.",
             });
         }
     };
@@ -79,21 +82,18 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                 .some(value => value.toLowerCase().includes(searchLower));
         });
 
-    const patientsItems = filteredPatients.map((patient) => (
-        {
+    const patientsItems = filteredPatients.map((patient) => ({
             key: patient.id,
             label: `${patient.last_name} ${patient.first_name} (${new Date(patient.birthday).toLocaleDateString("ru-RU")})`,
-            children:
-                <div>
-                    <p><b>Пациент:</b> {patient.last_name} {patient.first_name}</p>
-                    <p><b>Дата рождения:</b> {new Date(patient.birthday).toLocaleDateString("ru-RU")}</p>
-                    <p><b>Диагноз:</b> {patient.diagnosis}</p>
-                    <p><b>Email:</b> {patient.email}</p>
-                    <p><b>Телефон:</b> {patient.phone}</p>
-                    <Button type="primary" onClick={() => setSelectedPatient(patient)}>Выбрать</Button>
-                </div>,
-        }
-    ));
+            children: <div>
+                <p><b>Пациент:</b> {patient.last_name} {patient.first_name}</p>
+                <p><b>Дата рождения:</b> {new Date(patient.birthday).toLocaleDateString("ru-RU")}</p>
+                <p><b>Диагноз:</b> {patient.diagnosis}</p>
+                <p><b>Email:</b> {patient.email}</p>
+                <p><b>Телефон:</b> {patient.phone}</p>
+                <Button type="primary" onClick={() => setSelectedPatient(patient)}>Выбрать</Button>
+            </div>,
+        }));
 
     const filteredLenses = lenses.filter((lens) => {
         const searchLower = searchLensString.toLowerCase();
@@ -103,25 +103,20 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
             .some(value => value.toLowerCase().includes(searchLower));
     })
 
-    const lensesItems = filteredLenses.map((lens) => (
-        {
-            key: lens.id,
-            label: `Линза ${lens.side} ${lens.diameter} мм`,
-            children:
-                <div>
-                    <p><b>Диаметр:</b> {lens.diameter}</p>
-                    <p><b>Тор:</b> {lens.tor}</p>
-                    <p><b>Пресетная рефракция:</b> {lens.preset_refraction}</p>
-                    <p><b>Диаметр:</b> {lens.diameter}</p>
-                    <p><b>FVC:</b> {lens.fvc}</p>
-                    <p><b>Острота зрения (Trial):</b> {lens.trial}</p>
-                    <p><b>Периферийная торичность:</b> {lens.periphery_toricity}</p>
-                    <p><b>Сторона:</b> {lens.side}</p>
-                    <p><b>Esa:</b> {lens.esa}</p>
-                    <Button type="primary" onClick={() => setSelectedLens(lens)}>Выбрать</Button>
-                </div>,
-        }
-    ));
+    const lensesItems = filteredLenses.map((lens) => ({
+            key: lens.id, label: `Линза ${lens.side} ${lens.diameter} мм`, children: <div>
+                <p><b>Диаметр:</b> {lens.diameter}</p>
+                <p><b>Тор:</b> {lens.tor}</p>
+                <p><b>Пресетная рефракция:</b> {lens.preset_refraction}</p>
+                <p><b>Диаметр:</b> {lens.diameter}</p>
+                <p><b>FVC:</b> {lens.fvc}</p>
+                <p><b>Острота зрения (Trial):</b> {lens.trial}</p>
+                <p><b>Периферийная торичность:</b> {lens.periphery_toricity}</p>
+                <p><b>Сторона:</b> {lens.side}</p>
+                <p><b>Esa:</b> {lens.esa}</p>
+                <Button type="primary" onClick={() => setSelectedLens(lens)}>Выбрать</Button>
+            </div>,
+        }));
 
     const SelectPatientStep = () => {
         return selectedPatient ? (
@@ -139,9 +134,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                 >
                     Выбрать другого пациента
                 </Button>
-            </div>
-        ) : (
-            <>
+            </div>) : (<>
                 <Input
                     placeholder="Поиск пациента"
                     value={searchPatientString}
@@ -155,13 +148,11 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                         items={patientsItems}
                     />
                 </div>
-            </>
-        )
+            </>)
     };
 
     const SelectLensStep = () => {
-        return selectedLens ? (
-            <div style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}>
+        return selectedLens ? (<div style={{padding: "10px", background: "#f5f5f5", borderRadius: 5, marginBottom: 15}}>
                 <Typography.Text strong>
                     {selectedLens.diameter} {selectedLens.tor} {selectedLens.preset_refraction}
                 </Typography.Text>
@@ -181,9 +172,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                 >
                     Выбрать другую линзу
                 </Button>
-            </div>
-        ) : (
-            <>
+            </div>) : (<>
                 <Input
                     placeholder="Поиск линз"
                     value={searchLensString}
@@ -197,13 +186,11 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                         items={lensesItems}
                     />
                 </div>
-            </>
-        )
+            </>)
     };
 
     const ConfirmStep = () => {
-        return (
-            <>
+        return (<>
                 <Alert
                     type="warning"
                     message="Внимание! После подтверждения линза будет считаться выданной, данное действие нельзя будет отменить."
@@ -251,24 +238,16 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                     <p><b>Сторона:</b> {selectedLens.side}</p>
                     <p><b>Esa:</b> {selectedLens.esa}</p>
                 </div>
-            </>
-        );
+            </>);
     };
 
-    const steps = [
-        {
-            title: 'Выбор пациента',
-            content: <SelectPatientStep/>,
-        },
-        {
-            title: 'Выбор линзы',
-            content: <SelectLensStep/>,
-        },
-        {
-            title: 'Подтверждение',
-            content: <ConfirmStep/>,
-        },
-    ];
+    const steps = [{
+        title: 'Выбор пациента', content: <SelectPatientStep/>,
+    }, {
+        title: 'Выбор линзы', content: <SelectLensStep/>,
+    }, {
+        title: 'Подтверждение', content: <ConfirmStep/>,
+    },];
 
     const isActiveNextButton = () => {
         if (currentStep === 0 && !selectedPatient) {
@@ -286,8 +265,7 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
         return currentStep === steps.length - 1;
     };
 
-    return (
-        <Modal
+    return (<Modal
             title="Выдача линзы пациенту"
             open={visible}
             onCancel={() => {
@@ -299,28 +277,22 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
             }}
             footer={null}
             maskClosable={false}
-            width={window.innerWidth > 768 ? 700 : "90%"}
+            width={!screens.xs ? 700 : "90%"}
             centered
         >
-            {loading ? (
-                <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "70vh"}}>
+            {loading ? (<div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "70vh"}}>
                     <Spin size="large"/>
-                </div>
-            ) : (
-                <div style={{maxHeight: "70vh", overflowY: "auto", padding: "10px"}}>
+                </div>) : (<div style={{maxHeight: "70vh", overflowY: "auto", padding: "10px"}}>
                     {steps[currentStep].content}
-                </div>
-            )}
+                </div>)}
 
 
-            {window.innerWidth > 768 && (
-                <Steps
+            {!screens.xs && (<Steps
                     current={currentStep}
                     items={steps}
                     style={{marginTop: 16}}
-                    direction={window.innerWidth > 768 ? "horizontal" : "vertical"}
-                />
-            )}
+                    direction={!screens.xs ? "horizontal" : "vertical"}
+                />)}
 
             <Row
                 justify="end"
@@ -348,14 +320,11 @@ const LensIssueFormModal = ({visible, onCancel, onSubmit}) => {
                     {isActiveFinishButton() ? "Завершить" : "Далее"}
                 </Button>
             </Row>
-        </Modal>
-    );
+        </Modal>);
 };
 
 LensIssueFormModal.propTypes = {
-    visible: PropTypes.bool.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    visible: PropTypes.bool.isRequired, onCancel: PropTypes.func.isRequired, onSubmit: PropTypes.func.isRequired,
 };
 
 export default LensIssueFormModal;

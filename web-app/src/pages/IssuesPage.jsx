@@ -1,23 +1,40 @@
-import {notification, Spin, Table, Input, Row, Col, DatePicker, Tooltip, Button, FloatButton, Typography} from "antd";
+import {
+    notification,
+    Spin,
+    Table,
+    Input,
+    Row,
+    Col,
+    DatePicker,
+    Tooltip,
+    Button,
+    FloatButton,
+    Typography,
+    Timeline, Grid
+} from "antd";
 import getAllLensIssues from "../api/lens_issues/GetAllLensIssues.jsx";
 import {useEffect, useState} from "react";
 import {useAuth} from "../AuthContext.jsx";
-import {DatabaseOutlined, LoadingOutlined, PlusOutlined} from "@ant-design/icons";
+import {DatabaseOutlined, LoadingOutlined, PlusOutlined, UnorderedListOutlined} from "@ant-design/icons";
 import LensIssueViewModal from "../components/lens_issues/LensIssueViewModal.jsx";
 import dayjs from "dayjs";
 import LensIssueFormModal from "../components/lens_issues/LensIssueFormModal.jsx";
 import addLensIssue from "../api/lens_issues/AddLensIssue.jsx";
+import SelectViewMode from "../components/SelectViewMode.jsx";
 
 const {Title} = Typography;
+const {useBreakpoint} = Grid;
 
 const IssuesPage = () => {
     const {user} = useAuth();
+    const screens = useBreakpoint();
 
     const [loading, setLoading] = useState(true);
     const [lensIssues, setLensIssues] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedIssue, setSelectedIssue] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [viewMode, setViewMode] = useState("table");
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -27,6 +44,7 @@ const IssuesPage = () => {
 
     useEffect(() => {
         fetchLensIssuesWithCache();
+        fetchViewModeFromCache();
         document.title = "Выдача линз";
     }, []);
 
@@ -46,6 +64,13 @@ const IssuesPage = () => {
             setLoading(false);
         } else {
             await fetchLensIssues();
+        }
+    };
+
+    const fetchViewModeFromCache = () => {
+        const cachedViewMode = localStorage.getItem("viewModeIssues");
+        if (cachedViewMode) {
+            setViewMode(cachedViewMode);
         }
     };
 
@@ -123,6 +148,19 @@ const IssuesPage = () => {
         }
     );
 
+    const viewModes = [
+        {
+            value: "table",
+            label: "Таблица",
+            icon: <DatabaseOutlined style={{marginRight: 8}}/>,
+        },
+        {
+            value: "timeline",
+            label: "Лента",
+            icon: <UnorderedListOutlined style={{marginRight: 8}}/>,
+        },
+    ];
+
     const columns = [
         {
             title: "Дата выдачи",
@@ -158,25 +196,77 @@ const IssuesPage = () => {
         },
     ];
 
+    const TableView = () => (
+        <Table
+            columns={columns}
+            dataSource={filteredIssues}
+            rowKey="id"
+            pagination={{
+                current: currentPage,
+                pageSize: pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ["5", "10", "20", "50"],
+                onChange: (page, newPageSize) => {
+                    setCurrentPage(page);
+                    setPageSize(newPageSize);
+                },
+            }}
+            showSorterTooltip={false}
+        />
+    );
+
+    const timeLineItems = filteredIssues.map(issue => ({
+        label: dayjs(issue.issue_date).format("DD.MM.YYYY"),
+        children: (
+            <Row
+                gutter={[16, 16]}
+                align={"middle"}
+            >
+                <Col xs={24} md={24} sm={24} xl={13}>
+                    <p style={{textAlign: "right"}}>Пациент: {issue.patient.last_name} {issue.patient.first_name}</p>
+                </Col>
+                <Col xs={24} md={24} sm={24} xl={5}>
+                    <p style={{textAlign: "right"}}>Линза: {issue.lens.side} {issue.lens.diameter}</p>
+                </Col>
+                <Col xs={24} md={24} sm={24} xl={6}>
+                    <Button
+                        type={"dashed"}
+                        onClick={() => setSelectedIssue(issue)}
+                        style={{marginRight: 40}}
+                    >
+                        Подробнее
+                    </Button>
+                </Col>
+            </Row>
+        ),
+    }));
+
+    const TimeLineView = () => (
+        <Timeline
+            items={timeLineItems}
+            mode={screens.xs ? "left" : "right"}
+        />
+    );
+
     return (
         <div style={{padding: 20}}>
             <Title level={1}><DatabaseOutlined/> Выдача линз</Title>
             <Row gutter={[16, 16]} style={{marginBottom: 20}}>
-                <Col xs={24} md={12} sm={24} xl={14}>
+                <Col xs={24} md={24} sm={24} xl={12}>
                     <Input
                         placeholder="Поиск по пациенту или дате"
                         onChange={handleSearch}
-                        style={{marginBottom: 20, width: "100%"}}
+                        style={{width: "100%"}}
                         allowClear
                     />
                 </Col>
 
                 <Col xs={24} md={
-                    startFilterDate && endFilterDate ? 8 : 12
+                    startFilterDate && endFilterDate ? 12 : 16
                 } sm={
-                    startFilterDate && endFilterDate ? 16 : 24
+                    16
                 } xl={
-                    startFilterDate && endFilterDate ? 8 : 10
+                    startFilterDate && endFilterDate ? 6 : 8
                 }>
                     <Tooltip
                         title="Фильтр по дате выдачи линзы"
@@ -203,7 +293,6 @@ const IssuesPage = () => {
                                     setStartFilterDate(null);
                                     setEndFilterDate(null);
                                 }}
-                                style={{marginLeft: 10}}
                                 type={"primary"}
                                 block
                             >
@@ -212,29 +301,27 @@ const IssuesPage = () => {
                         </Tooltip>
                     </Col>
                 )}
-
+                <Col xs={24}
+                     md={startFilterDate && endFilterDate ? 8 : 8}
+                     sm={startFilterDate && endFilterDate ? 24 : 8}
+                     xl={4}>
+                    <SelectViewMode
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
+                        localStorageKey={"viewModeIssues"}
+                        toolTipText={"Формат отображения выдач линз"}
+                        viewModes={viewModes}
+                    />
+                </Col>
             </Row>
             {loading ? (
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100vh"}}>
                     <Spin indicator={<LoadingOutlined style={{fontSize: 64, color: "#1890ff"}} spin/>}/>
                 </div>
+            ) : viewMode === "table" ? (
+                <TableView/>
             ) : (
-                <Table
-                    columns={columns}
-                    dataSource={filteredIssues}
-                    rowKey="id"
-                    pagination={{
-                        current: currentPage,
-                        pageSize: pageSize,
-                        showSizeChanger: true,
-                        pageSizeOptions: ["5", "10", "20", "50"],
-                        onChange: (page, newPageSize) => {
-                            setCurrentPage(page);
-                            setPageSize(newPageSize);
-                        },
-                    }}
-                    showSorterTooltip={false}
-                />
+                <TimeLineView/>
             )}
 
             <FloatButton

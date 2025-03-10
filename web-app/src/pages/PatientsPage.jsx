@@ -15,10 +15,11 @@ import {
     Typography
 } from "antd";
 import {
+    BuildOutlined,
     LoadingOutlined,
     PlusOutlined,
     SortAscendingOutlined,
-    SortDescendingOutlined,
+    SortDescendingOutlined, TableOutlined,
     TeamOutlined
 } from "@ant-design/icons";
 import {useAuth} from "../AuthContext.jsx";
@@ -223,6 +224,19 @@ const PatientsPage = () => {
         />
     );
 
+    const viewModes = [
+        {
+            value: "tile",
+            label: "Плитка",
+            icon: <BuildOutlined style={{marginRight: 8}}/>
+        },
+        {
+            value: "table",
+            label: "Таблица",
+            icon: <TableOutlined style={{marginRight: 8}}/>
+        }
+    ];
+
     const columns = [
         {
             title: "Фамилия",
@@ -352,11 +366,12 @@ const PatientsPage = () => {
                         setViewMode={setViewMode}
                         localStorageKey={"viewModePatients"}
                         toolTipText={"Формат отображения пациентов"}
+                        viewModes={viewModes}
                     />
                 </Col>
             </Row>
 
-                    {loading ? (
+            {loading ? (
                 <div style={{
                     display: "flex",
                     justifyContent: "center",
